@@ -1,3 +1,4 @@
 /MultiplayerMinesweeper-build/.idea/*
 /MultiplayerMinesweeper-build/MultiplayerMinesweeper-client/target/*
 /MultiplayerMinesweeper-build/MultiplayerMinesweeper-server/target/*
+*.iml
