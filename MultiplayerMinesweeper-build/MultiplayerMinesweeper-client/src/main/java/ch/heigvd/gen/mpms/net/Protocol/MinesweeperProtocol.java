@@ -10,7 +10,9 @@ public class MinesweeperProtocol {
 
     public final static String VERSION   = "1.0";
     public final static int DEFAULT_PORT = 1001;
-    public final static String EOL       = "\r\n";
+
+    public final static String EOL              = "\r\n";
+    public final static char   CARRIAGE_RETURN  = '\r';
 
     // - - - - - - - - - - -          Status          - - - - - - - - - - - //
     public final static String STATUS_220 = "220";
@@ -39,6 +41,25 @@ public class MinesweeperProtocol {
     public final static String CMD_SWEEP                = "SWEEP";
     public final static String CMD_QUIT_GAME            = "QUIT GAME";
     public final static String CMD_DISCONNECT           = "DISCONNECT";
+
+    public final static String[] SUPPORTED_COMMANDS = new String[]{
+            CMD_CREATE_LOBBY,
+            CMD_OPEN_LOBBY,
+            CMD_CLOSE_LOBBY,
+            CMD_JOIN_LOBBY,
+            CMD_QUIT_LOBBY,
+            CMD_EXPEL_LOBBY,
+            CMD_SET_SCORE_MODE,
+            CMD_SET_MINE_AMOUNT,
+            CMD_SET_SIZE,
+            CMD_SET_PLAYER_AMOUNT,
+            CMD_ENABLE_BONUS_MALUS,
+            CMD_DISABLE_BONUS_MALUS,
+            CMD_START_GAME,
+            CMD_SWEEP,
+            CMD_QUIT_GAME,
+            CMD_DISCONNECT
+    };
 
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
     public final static String REPLY_OK                         = "OK";
