@@ -30,6 +30,39 @@ public class ServantWorker implements Runnable{
     }
 
     public void run() {
+        String line;
+        boolean shouldRun = true;
 
+        try {
+            LOG.info("Reading until client sends BYE or closes the connection...");
+            while ((shouldRun) && (line = br.readLine()) != null) {
+
+            }
+
+            LOG.info("Cleaning up resources...");
+            br.close();
+            pw.close();
+            clientSocket.close();
+
+        } catch (IOException e) {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException ex) {
+                    LOG.log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            }
+            if (pw != null) {
+                pw.close();
+            }
+            if (clientSocket != null) {
+                try {
+                    clientSocket.close();
+                } catch (IOException ex) {
+                    LOG.log(Level.SEVERE, ex.getMessage(), ex);
+                }
+            }
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+        }
     }
 }
