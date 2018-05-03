@@ -38,6 +38,7 @@ public class MinesweeperProtocol {
     public final static String CMD_START_GAME           = "START GAME";
     public final static String CMD_SWEEP                = "SWEEP";
     public final static String CMD_QUIT_GAME            = "QUIT GAME";
+    public final static String CMD_DISCONNECT           = "DISCONNECT";
 
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
     public final static String REPLY_OK                         = "OK";

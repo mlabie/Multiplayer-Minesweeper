@@ -10,7 +10,7 @@ public class MinesweeperProtocol {
 
     public final static String VERSION   = "1.0";
     public final static int DEFAULT_PORT = 1001;
-    public final static String EOL = "\r\n";
+    public final static String EOL       = "\r\n";
 
     // - - - - - - - - - - -          Status          - - - - - - - - - - - //
     public final static String STATUS_220 = "220";
@@ -38,6 +38,7 @@ public class MinesweeperProtocol {
     public final static String CMD_START_GAME           = "START GAME";
     public final static String CMD_SWEEP                = "SWEEP";
     public final static String CMD_QUIT_GAME            = "QUIT GAME";
+    public final static String CMD_DISCONNECT           = "DISCONNECT";
 
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
     public final static String REPLY_OK                         = "OK";
