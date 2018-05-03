@@ -75,5 +75,6 @@ public class MinesweeperProtocol {
     public final static String REPLY_NOT_IN_A_GAME              = "NOT IN A GAME";
     public final static String REPLY_PLAYER_LEFT                = "PLAYER LEFT";
     public final static String REPLY_GAME_FINISHED              = "GAME FINISHED";
+    public final static String REPLY_UNKNOWN_COMMAND            = "UNKNOWN COMMAND";
 
 }
