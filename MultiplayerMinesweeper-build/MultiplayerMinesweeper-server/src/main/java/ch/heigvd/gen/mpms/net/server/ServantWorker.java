@@ -47,7 +47,7 @@ public class ServantWorker implements Runnable{
 
         try {
 
-            LOG.info("Reading until client sends QUIT or closes the connection...");
+            LOG.info("Reading until client sends " + MinesweeperProtocol.CMD_DISCONNECT + " or closes the connection...");
 
             while ((shouldRun) && (request = br.readLine()) != null) {
 

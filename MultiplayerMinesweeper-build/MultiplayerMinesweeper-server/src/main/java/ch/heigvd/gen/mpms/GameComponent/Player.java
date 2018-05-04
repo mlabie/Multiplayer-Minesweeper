@@ -21,23 +21,23 @@ public class Player {
         this.score      = 0;
     }
 
-    String getPlayerName(){
+    public String getPlayerName(){
         return playerName;
     }
 
-    void setPlayerName(String playerName){
+    public void setPlayerName(String playerName){
         this.playerName = playerName;
     }
 
-    int getScore(){
+    public int getScore(){
         return score;
     }
 
-    void setScore(int score){
+    public void setScore(int score){
         this.score = score;
     }
 
-    ServantWorker getClient(){
+    public ServantWorker getClient(){
         return client;
     }
 
