@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.jfoenix:jfoenix:8.0.3">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfoenix/jfoenix/8.0.3/61c96b150c1ec247886cc0bca9fd9f806010eb89/jfoenix-8.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.jfoenix/jfoenix/8.0.3/5f40b5f2c9b145c097c0b43d7495d5ebd4eff9b1/jfoenix-8.0.3-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

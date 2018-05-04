@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/pocketgraph.iml" filepath="$PROJECT_DIR$/pocketgraph.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pocketgraph_main.iml" filepath="$PROJECT_DIR$/.idea/modules/pocketgraph_main.iml" group="pocketgraph" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pocketgraph_test.iml" filepath="$PROJECT_DIR$/.idea/modules/pocketgraph_test.iml" group="pocketgraph" />
+    </modules>
+  </component>
+</project>
