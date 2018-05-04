@@ -31,6 +31,7 @@ public class Lobby {
         }
 
         isOpened = true;
+        return 0;
     }
 
     public int closeLobby(Player player){
@@ -41,6 +42,8 @@ public class Lobby {
         }
 
         isOpened = false;
+
+        return 0;
     }
 
     public void joinLobby(Player player){
