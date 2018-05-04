@@ -99,16 +99,24 @@ public class ServantWorker implements Runnable{
      */
     private int manageCommand(String request){
 
-        String answer;
-        String command;
+        String  answer;
+        String  command;
+        boolean commandExist;
+        int     iter_command;
 
-        int iter_command;
+        commandExist = false;
 
-        for(iter_command = 0; iter_command < MinesweeperProtocol.SUPPORTED_COMMANDS.length; iter_command ++)
-            if (request.startsWith(MinesweeperProtocol.SUPPORTED_COMMANDS[iter_command]))
+        for(iter_command = 0; iter_command < MinesweeperProtocol.SUPPORTED_COMMANDS.length; iter_command++)
+            if ((commandExist = request.startsWith(MinesweeperProtocol.SUPPORTED_COMMANDS[iter_command])))
                 break;
 
-        command = MinesweeperProtocol.SUPPORTED_COMMANDS[iter_command];
+
+        if(commandExist){
+            command = MinesweeperProtocol.SUPPORTED_COMMANDS[iter_command];
+        } else {
+            command = request;
+        }
+
 
         switch (command){
 
@@ -243,7 +251,7 @@ public class ServantWorker implements Runnable{
      * Function that sends an answer to the client, using the CARRIAGE_RETURN character.
      * @param answer    : The answer to send
      */
-    private void print(String answer){
+    public void print(String answer){
         pw.println(answer + MinesweeperProtocol.CARRIAGE_RETURN);
     }
 }
