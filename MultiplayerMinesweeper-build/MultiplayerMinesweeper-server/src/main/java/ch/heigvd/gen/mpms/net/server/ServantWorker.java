@@ -1,9 +1,12 @@
 package ch.heigvd.gen.mpms.net.server;
 
+import ch.heigvd.gen.mpms.GameComponent.Player;
+import ch.heigvd.gen.mpms.lobby.Lobby;
 import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +21,9 @@ public class ServantWorker implements Runnable{
 
     private BufferedReader  br = null;
     private PrintWriter     pw = null;
+
+    private Lobby  lobby  = null;
+    private Player player = null;
 
 
     public ServantWorker(Socket clientSocket) {
@@ -99,16 +105,25 @@ public class ServantWorker implements Runnable{
      */
     private int manageCommand(String request){
 
-        String  answer;
-        String  command;
+        String   answer;
+        String   command;
+
+        String[] parameters;
+        int      parametersAmount;
+
         boolean commandExist;
         int     iter_command;
 
+
+
         commandExist = false;
+
+
 
         for(iter_command = 0; iter_command < MinesweeperProtocol.SUPPORTED_COMMANDS.length; iter_command++)
             if ((commandExist = request.startsWith(MinesweeperProtocol.SUPPORTED_COMMANDS[iter_command])))
                 break;
+
 
 
         if(commandExist){
@@ -118,21 +133,46 @@ public class ServantWorker implements Runnable{
         }
 
 
+        parameters       = parameter(request.replace(command, ""), MinesweeperProtocol.DELIMITER);
+        parametersAmount = parameters.length;
+
+
         switch (command){
 
             case MinesweeperProtocol.CMD_CLOSE_LOBBY:
                 answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_CLOSE_LOBBY +
                          "\" has not been implemented yet.";
+
+                answer = "nbr param : " + parameters.length + ",    param : ";
+                for(String s : parameters)
+                    answer += s + " ";
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
 
+
+
             case MinesweeperProtocol.CMD_CREATE_LOBBY:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_CREATE_LOBBY +
-                        "\" has not been implemented yet.";
+
+                // check if the number of arguments is correct
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_CREATE_LOBBY){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_CREATE_LOBBY){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                else {
+                    //player = new Player(this, parameters[1]);
+                    answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_CREATE_LOBBY +
+                            "\" has not been implemented yet.";
+                }
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
+
+
 
             case MinesweeperProtocol.CMD_DISABLE_BONUS_MALUS:
                 answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_DISABLE_BONUS_MALUS +
@@ -247,11 +287,23 @@ public class ServantWorker implements Runnable{
         return 0;
     }
 
+
     /**
      * Function that sends an answer to the client, using the CARRIAGE_RETURN character.
      * @param answer    : The answer to send
      */
     public void print(String answer){
         pw.println(answer + MinesweeperProtocol.CARRIAGE_RETURN);
+    }
+
+    private String[] parameter(String parameters, String delim){
+        if(parameters.startsWith(delim))
+            parameters = parameters.replaceFirst(delim, "");
+
+        if(parameters.contains(delim)){
+            return parameters.split(delim);
+        }else {
+            return new String[0];
+        }
     }
 }

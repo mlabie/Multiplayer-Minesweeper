@@ -13,6 +13,7 @@ public class MinesweeperProtocol {
 
     public final static String EOL              = "\r\n";
     public final static char   CARRIAGE_RETURN  = '\r';
+    public final static String DELIMITER        = " ";
 
     // - - - - - - - - - - -          Status          - - - - - - - - - - - //
     public final static String STATUS_220 = "220";
@@ -61,6 +62,25 @@ public class MinesweeperProtocol {
             CMD_DISCONNECT
     };
 
+    // - - - - - - - - - - -         Parameter        - - - - - - - - - - - //
+    public final static int NBR_PARAM_CREATE_LOBBY         =  2;
+    public final static int NBR_PARAM_OPEN_LOBBY           =  0;
+    public final static int NBR_PARAM_CLOSE_LOBBY          =  0;
+    public final static int NBR_PARAM_JOIN_LOBBY           =  2;
+    public final static int NBR_PARAM_QUIT_LOBBY           =  0;
+    public final static int NBR_PARAM_EXPEL_LOBBY          =  1;
+    public final static int NBR_PARAM_SET_SCORE_MODE       =  1;
+    public final static int NBR_PARAM_SET_MINE_AMOUNT      =  1;
+    public final static int NBR_PARAM_SET_SIZE             =  2;
+    public final static int NBR_PARAM_SET_PLAYER_AMOUNT    =  1;
+    public final static int NBR_PARAM_ENABLE_BONUS_MALUS   =  0;
+    public final static int NBR_PARAM_DISABLE_BONUS_MALUS  =  0;
+    public final static int NBR_PARAM_START_GAME           =  0;
+    public final static int NBR_PARAM_SWEEP                =  2;
+    public final static int NBR_PARAM_QUIT_GAME            =  0;
+    public final static int NBR_PARAM_DISCONNECT           =  0;
+
+
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
     public final static String REPLY_OK                         = "OK";
     public final static String REPLY_ACTION_DENIED              = "ACTION DENIED";
@@ -97,5 +117,7 @@ public class MinesweeperProtocol {
     public final static String REPLY_PLAYER_LEFT                = "PLAYER LEFT";
     public final static String REPLY_GAME_FINISHED              = "GAME FINISHED";
     public final static String REPLY_UNKNOWN_COMMAND            = "UNKNOWN COMMAND";
+    public final static String REPLY_TOO_MANY_ARGUMENTS         = "TOO MANY ARGUMENTS";
+    public final static String REPLY_NOT_ENOUGH_ARGUMENTS       = "NOT ENOUGH ARGUMENTS";
 
 }
