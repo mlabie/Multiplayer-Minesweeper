@@ -3,7 +3,10 @@ package ch.heigvd.gen.mpms.GameComponent;
 import ch.heigvd.gen.mpms.net.server.ServantWorker;
 
 /**
+ * @brief: This class represent a player, which is represented by a name, a ServantWorker, and the score
+ *         he reached during a game.
  *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
  */
 public class Player {
 
