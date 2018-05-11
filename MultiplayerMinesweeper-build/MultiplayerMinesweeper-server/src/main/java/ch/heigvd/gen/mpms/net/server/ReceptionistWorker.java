@@ -8,7 +8,14 @@ import java.util.logging.Logger;
 import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
 
 /**
- * cf https://wasadigi.gitbooks.io/res-heigvd-network-programming-application-protoc/content/tcp_programming.html
+ * This class imlements the receptionnist of the server. For each client
+ * that wants to connect to the server, the server will create a threaded
+ * servant for him. This Servant will manage the clients command.
+ *
+ * @source cf https://wasadigi.gitbooks.io/res-heigvd-network-programming-application-protoc/content/tcp_programming.html
+ * @author Olivier Liechti
+ *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
  */
 public class ReceptionistWorker implements Runnable {
 
@@ -16,18 +23,28 @@ public class ReceptionistWorker implements Runnable {
 
     private int port;
 
-
+    /**
+     * Default constructor. Instanciate with the default port defined in
+     * the protocol.
+     */
     public ReceptionistWorker(){
         this(MinesweeperProtocol.DEFAULT_PORT);
     }
 
 
+    /**
+     * Instanciate the receptionnist with a given port.
+     * @param port
+     */
     public ReceptionistWorker(int port){
         this.port = port;
     }
 
 
-    //@Override
+    /**
+     * Run method of the thread. Starts the receptionnist.
+     */
+    @Override
     public void run() {
         ServerSocket serverSocket;
 
@@ -39,7 +56,7 @@ public class ReceptionistWorker implements Runnable {
         }
 
         while (true) {
-            LOG.info("Waiting (blocking) for a new client...");
+            LOG.info("Waiting for a new client...");
             try {
                 Socket clientSocket = serverSocket.accept();
                 new Thread(new ServantWorker(clientSocket)).start();
