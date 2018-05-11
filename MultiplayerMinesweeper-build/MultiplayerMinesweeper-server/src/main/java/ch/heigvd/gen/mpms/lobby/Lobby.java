@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class Lobby {
 
     private static final Object lock        = new Object();
+    private final Object lobbyLocker        = new Object();
 
     public  static ArrayList<Lobby> lobbies = new ArrayList<>();
 
@@ -33,6 +34,12 @@ public class Lobby {
     private int nbrPlayer;
     private Configuration config;
 
+
+    /**
+     * Constructor of the class. It needs at list a lobby name and a player which will be the admin of the game.
+     * @param name
+     * @param admin
+     */
     public Lobby(String name, Player admin){
         this.name    = name;
         this.admin   = admin;
@@ -42,46 +49,27 @@ public class Lobby {
         config       = new Configuration();
     }
 
-    public int openLobby(Player player){
 
-        if(player != admin){
-            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
-            return Integer.parseInt(MinesweeperProtocol.STATUS_450);
-        }
-
-        isOpened = true;
-
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED);
-        return Integer.parseInt(MinesweeperProtocol.STATUS_350);
-    }
-
-    public int closeLobby(Player player){
-
-        if(player != admin){
-            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
-            return Integer.parseInt(MinesweeperProtocol.STATUS_450);
-        }
-
-        isOpened = false;
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_CLOSED);
-        return Integer.parseInt(MinesweeperProtocol.STATUS_350);
-    }
-
-    public synchronized int joinLobby(Player player){
-
-        // Check if the lobby is opened
-        if(!isOpened){
-
-        }
-
-        return 0;
-    }
-
-
+    /**
+     * Get the name of the lobby
+     * @return the name of the lobby
+     */
     public String getName(){
         return name;
     }
 
+    /**
+     * Get the locker of the lobby
+     * @return
+     */
+    public Object getLobbyLocker(){
+        return lobbyLocker;
+    }
+
+    /**
+     * Check if the lobby is closed of opened.
+     * @return
+     */
     public boolean isOpened(){
         return isOpened;
     }
@@ -89,59 +77,174 @@ public class Lobby {
 
 
     /**
-     * Find a lobby int the lobbies list
+     * Open the lobby if the player asking for is the admin.
+     * @param player    : the player asking to open the lobby
+     * @return  The status of the command : 250 if it has been opened, another status if it was not accepted.
+     */
+    public int openLobby(Player player){
+        synchronized (lobbyLocker){
+            if(player != admin){
+                player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+                return MinesweeperProtocol.STATUS_450_I;
+            }
+
+            isOpened = true;
+
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED);
+            return MinesweeperProtocol.STATUS_250_I;
+        }
+    }
+
+
+    /**
+     * Close the lobby if the player asking for is the admin.
+     * @param player    : the player asking to close the lobby
+     * @return  The status of the command : 250 if it has been closed, another status if it was not accepted.
+     */
+    public int closeLobby(Player player){
+        synchronized (lobbyLocker){
+            if(player != admin){
+                player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+                return MinesweeperProtocol.STATUS_450_I;
+            }
+
+            isOpened = false;
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_CLOSED);
+            return MinesweeperProtocol.STATUS_250_I;
+        }
+
+    }
+
+    /**
+     * Join the actual lobby if is not closed, that there is enough slot left,
+     * and that the player's name is not already used.
      *
-     * @param name  The name of the lobby
-     * @return the position of the lobby, going from 0 to lobbies.size() - 1, or -1 if the lobby doesn't exist.
+     * @param player    The player that want to join
+     *
+     * @return the status of the command.
      */
-    public static synchronized int findLobby(String name){
-        int pos = -1;
-        synchronized (lock){
-            for(int i = 0; i < lobbies.size(); i++){
-                if(lobbies.get(i).getName().equals(name)){
-                    pos = i;
-                    break;
-                }
+    public synchronized int joinLobby(Player player){
+        synchronized (lobbyLocker){
+            // Check if the lobby is opened
+            if(!isOpened){
+                player.getClient().print(MinesweeperProtocol.STATUS_650 + " " +
+                                         MinesweeperProtocol.REPLY_LOBBY_CLOSED);
+                return MinesweeperProtocol.STATUS_650_I;
             }
-            return pos;
+
+            // check if the player name is already used in the lobby
+            if(hasPlayer(player.getPlayerName()) != null){
+                player.getClient().print(MinesweeperProtocol.STATUS_650 + " " +
+                                         MinesweeperProtocol.REPLY_PLAYER_NAME_NOT_AVAIBALE);
+                return MinesweeperProtocol.STATUS_650_I;
+            }
+
+            //Check if the lobby is full
+            /*if(nbrPlayer >= config.getSlot){
+                player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_LOBBY_FULL);
+                return MinesweeperProtocol.STATUS_650_I;
+            }*/
+
+            // The player can join the lobby.
+            players.add(player);
+            nbrPlayer++;
+
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " +
+                                 player.getPlayerName());
+            return MinesweeperProtocol.STATUS_250_I;
         }
+    }
+
+    /**
+     * the player will quit the lobby. If it's the admin, all the players will be expelled, and the lobby removed
+     * from the lobbys list.
+     * @param player    the player that wants to quit.
+     * @return the status of the command.
+     */
+    public int quitLobby(Player player){
+        // if the player asking to quit is the admin, we are going to
+        // expel all the player and delete the lobby.
+        if(player == admin){
+
+            // expelling all the player before delating the lobby.
+            while(!players.isEmpty()){
+                expelLobby(player, players.get(0).getPlayerName());
+            }
+
+            deleteLobby(this);
+        }
+        else if(hasPlayer(player.getPlayerName()) != null){
+            String name = player.getPlayerName();
+            players.remove(player);
+            nbrPlayer--;
+
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                                 MinesweeperProtocol.REPLY_LOBBY_LEFT_BY + " " + name);
+        }
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+    /**
+     * Expel a player from the lobby if the player is in the lobby, that it is not the admin, and that the player
+     * asking for expelling is the admin.
+     *
+     * @param player    The player asking for the expelling, it has to be the admin
+     * @param name      The name of the player that has to be expelled
+     *
+     * @return The status of the command
+     */
+    public int expelLobby(Player player, String name){
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        Player expelled = hasPlayer(name);
+
+        if(expelled == null || expelled == admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_PLAYER_NOT_FOUND);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+        // Critical section. We forbid the expeled ServantWorked to execute any command during this laps.
+        synchronized (expelled.getClient().lock) {
+            // Remove the player from the lobby.
+            players.remove(expelled);
+            nbrPlayer--;
+
+            // Set lobby of the player
+            expelled.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                    MinesweeperProtocol.REPLY_YOU_HAVE_BEEN_EXPELLED);
+
+            expelled.getClient().setLobby(null);
+            expelled.getClient().setPlayer(null);
+        }
+
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_LOBBY_LEFT_BY + " " + name);
+
+        return MinesweeperProtocol.STATUS_250_I;
     }
 
 
     /**
-     * Adds a new lobby to the lobby list, as long as it doesn't contain a lobby that already has the same name.
-     * @param lobby     The lobby to add
-     * @return the lobby position in the lobbies array, or -1 if it already exist in the lobbies list.
+     * Check if a given player name is already used in the actual lobby.
+     * @param name  : The player name
+     * @return returns the player if found, null else.
      */
-    public static int addLobby(Lobby lobby){
-        synchronized (lock){
-            int pos = findLobby(lobby.getName());
-            if(pos == -1){
-                lobbies.add(lobby);
-                return lobbies.size() - 1;
-            }else {
-                //the lobby already exists.
-                return -1;
-            }
-        }
-    }
+    private Player hasPlayer(String name){
+        if(admin.getPlayerName().equals(name))
+            return admin;
 
-    /**
-     * Remove a lobby of the lobbies list, if it exists.
-     * @param name the lobby to delete
-     * @return the position of the lobby that has been erased, or -1 if it doesn't exist.
-     */
-    public static int deleteLobby(String name){
-        synchronized (lock){
-            int pos = findLobby(name);
-            if(pos == -1){
-                //the lobby doesn't exist.
-                return -1;
-            }else {
-                lobbies.remove(pos);
-                return pos;
-            }
-        }
+        for(Player player : players)
+            if(player.getPlayerName().equals(name))
+                return player;
+
+        return null;
+
     }
 
     /**
@@ -152,6 +255,59 @@ public class Lobby {
         admin.getClient().print(answer);
         for(Player player : players){
             player.getClient().print(answer);
+        }
+    }
+
+    // ===================================        Méthodes Statics        =================================== //
+
+    /**
+     * Find a lobby int the lobbies list
+     *
+     * @param name  The name of the lobby
+     * @return the lobby if it was found, or null if the lobby doesn't exist.
+     */
+    public static synchronized Lobby findLobby(String name){
+        Lobby lobby = null;
+        synchronized (lock){
+            for(int i = 0; i < lobbies.size(); i++){
+                if(lobbies.get(i).getName().equals(name)){
+                    lobby = lobbies.get(i);
+                    break;
+                }
+            }
+            return lobby;
+        }
+    }
+
+
+    /**
+     * Adds a new lobby to the lobby list, as long as it doesn't contain a lobby that already has the same name.
+     * @param lobby     The lobby to add
+     * @return 0 if it has been added, or -1 if it already exist in the lobbies list.
+     */
+    public static int addLobby(Lobby lobby){
+        synchronized (lock){
+            if(findLobby(lobby.getName()) == null){
+                lobbies.add(lobby);
+                return 0;
+            }else {
+                //the lobby already exists.
+                return -1;
+            }
+        }
+    }
+
+    /**
+     * Remove a lobby of the lobbies list, if it exists.
+     * @param lobby the lobby to delete
+     * @return the position of the lobby that has been erased, or -1 if it doesn't exist.
+     */
+    public static int deleteLobby(Lobby lobby){
+        synchronized (lock){
+            if(lobbies.remove(lobby))
+                return 0;
+            else
+                return -1;
         }
     }
 }
