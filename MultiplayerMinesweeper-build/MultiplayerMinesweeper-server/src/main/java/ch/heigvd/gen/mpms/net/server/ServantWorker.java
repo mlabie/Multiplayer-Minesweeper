@@ -32,6 +32,8 @@ public class ServantWorker implements Runnable{
     private Lobby  lobby  = null;
     private Player player = null;
 
+    private final String WELCOME = "Welcome to the Multiplayer MineSweeper game !";
+
     /**
      * Used for critical section of the thread.
      */
@@ -85,7 +87,7 @@ public class ServantWorker implements Runnable{
 
 
         shouldRun = true;
-        answer    = "Welcome to the Multiplayer MineSweeper game !";
+        answer    = MinesweeperProtocol.STATUS_220 + " " + WELCOME;
 
         LOG.info(answer);
         print(answer);
@@ -114,6 +116,13 @@ public class ServantWorker implements Runnable{
             }
 
             LOG.info("Cleaning up resources...");
+
+            if(lobby != null){
+                if(Lobby.findLobby(lobby.getName()) != null){
+                    lobby.quitLobby(player);
+                }
+                lobby = null;
+            }
 
             br.close();
             pw.close();
