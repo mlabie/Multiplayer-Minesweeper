@@ -8,7 +8,7 @@ public interface IMinesweeperClient {
 
 	boolean isConnected();
 
-	void createLobby();
+	void createLobby(String name);
 
 	void joinLobby(String playerName, String lobbyName);
 
