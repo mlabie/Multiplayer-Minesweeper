@@ -24,6 +24,8 @@ public class ServantWorker implements Runnable{
 
     final static Logger LOG = Logger.getLogger(ServantWorker.class.getName());
 
+    private static final String WELCOME = "Welcome to the Multiplayer MineSweeper game !";
+
     private Socket clientSocket;
 
     private BufferedReader  br = null;
@@ -32,7 +34,7 @@ public class ServantWorker implements Runnable{
     private Lobby  lobby  = null;
     private Player player = null;
 
-    private final String WELCOME = "Welcome to the Multiplayer MineSweeper game !";
+
 
     /**
      * Used for critical section of the thread.
@@ -428,8 +430,25 @@ public class ServantWorker implements Runnable{
             //TODO
             // - - - - - - - - - - - - - - -      SET PLAYER AMOUNT     - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SET_PLAYER_AMOUNT:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_SET_PLAYER_AMOUNT +
-                        "\" has not been implemented yet.";
+                // check if the number of arguments is correct
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_SET_PLAYER_AMOUNT){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SET_PLAYER_AMOUNT){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                // check if the player already has a lobby
+                else if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+
+                    synchronized (lobby.getLobbyLocker()){
+
+                    }
+                    break;
+                }
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;

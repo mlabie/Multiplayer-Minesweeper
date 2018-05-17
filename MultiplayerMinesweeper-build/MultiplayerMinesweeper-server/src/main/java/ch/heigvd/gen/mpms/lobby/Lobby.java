@@ -46,7 +46,7 @@ public class Lobby {
         this.players = new ArrayList<Player>();
         isOpened     = false;
         nbrPlayer    = 1;
-        config       = new Configuration();
+        config       = new Configuration("Default");
     }
 
 
@@ -140,10 +140,10 @@ public class Lobby {
             }
 
             //Check if the lobby is full
-            /*if(nbrPlayer >= config.getSlot){
+            if(nbrPlayer >= config.getNbrSlot()){
                 player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_LOBBY_FULL);
                 return MinesweeperProtocol.STATUS_650_I;
-            }*/
+            }
 
             // The player can join the lobby.
             players.add(player);
@@ -244,7 +244,6 @@ public class Lobby {
                 return player;
 
         return null;
-
     }
 
     /**
