@@ -145,12 +145,31 @@ public class Lobby {
                 return MinesweeperProtocol.STATUS_650_I;
             }
 
+
+            // We send the current lobby status to the joining player
+
+            sendActualConfig(player);
+
+            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                                     MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " + admin.getPlayerName());
+
+            for(Player p : players){
+                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                                         MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " + p.getPlayerName());
+            }
+
+
+
             // The player can join the lobby.
             players.add(player);
             nbrPlayer++;
 
+
+            // Inform all the player that a player has joined the lobby.
             sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " +
                                  player.getPlayerName());
+
+
             return MinesweeperProtocol.STATUS_250_I;
         }
     }
@@ -230,6 +249,8 @@ public class Lobby {
     }
 
 
+
+
     /**
      * Check if a given player name is already used in the actual lobby.
      * @param name  : The player name
@@ -246,6 +267,249 @@ public class Lobby {
         return null;
     }
 
+
+    /***************************                Configuration                ***************************/
+
+
+    /**
+     * Sets the player amount allowed for the game. If there are more player in the players list than
+     * there is place after the modification, the last players that will have join the lobby will
+     * be expelled.
+     *
+     * @param player    : The player that wants to set the players amount (has to be the admin)
+     * @param amount    : The new amount of player. Configuration.MIN_SLOT min, Configuration.MIN_SLOT max.
+     *
+     * @return The status of the command
+     */
+    public int setPlayerAmount(Player player, int amount){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        // Check if the player amount respect the limited amount set
+        if(amount < Configuration.MIN_SLOT || amount > Configuration.MAX_SLOT){
+            player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_PLAYER_AMOUNT_NOT_ALLOWED);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+        // Set the new player amount
+        config.setNbrSlot(amount);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS + " " + amount);
+
+
+        // We expel all the player that are in excess
+        while (amount < nbrPlayer){
+            expelLobby(player, players.get(players.size()-1).getPlayerName());
+        }
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+    /**
+     * Change the size of the mine field.
+     *
+     * @param player    : The player that wants to set the field size (has to be the admin)
+     * @param width     : The new widht of the field. Configuration.MIN_WIDTH min, Configuration.MAX_WIDTH max.
+     * @param height    : The new height of the field. Configuration.MIN_HEIGHT min, Configuration.MAX_HEIGHT max.
+     *
+     * @return The status of the command
+     */
+    public int setFieldSize(Player player, int width, int height){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        // Check if the size respect the limited size set
+        if(width < Configuration.MIN_WIDTH || width > Configuration.MAX_WIDTH ||
+                height < Configuration.MIN_HEIGHT || height > Configuration.MAX_HEIGHT){
+            player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_SIZE_NOT_ALLOWED);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+
+        // set the new field size
+        config.setWidth(width);
+        config.setHeight(height);
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_SIZE_IS + " " + width + "X" + height);
+
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+
+    /**
+     * Change the score counting mode.
+     *
+     * @param player      : The player that wants to set the score mode (has to be the admin)
+     * @param scoreMode   :
+     *
+     * @return The status of the command
+     */
+    public int setScoreMode(Player player, String scoreMode){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+
+        // Check which score to set
+        if(scoreMode.equals(Configuration.ScoreMode.STANDARD.toString())){
+            config.setScore(Configuration.ScoreMode.STANDARD);
+        }
+        else if(scoreMode.equals(Configuration.ScoreMode.EXPLORER.toString())){
+            config.setScore(Configuration.ScoreMode.EXPLORER);
+        }
+        else if(scoreMode.equals(Configuration.ScoreMode.HARDSWEEPER.toString())){
+            config.setScore(Configuration.ScoreMode.HARDSWEEPER);
+        }else {
+            // If the score mode was not found...
+            player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_MODE_NOT_FOUND);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_SCORE_MODE_IS + " " + scoreMode);
+
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+
+    /**
+     * Change the proportion of mine for the game.
+     *
+     * @param player      : The player that wants to set the proportion of mines (has to be the admin)
+     * @param proportion  : The new proportion of mines of the field.
+     *                      Configuration.PROPORTION_MIN min, Configuration.PROPORTION_MAX max.
+     *
+     * @return The status of the command
+     */
+    public int setMineProportion(Player player, int proportion){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        // Check if the size respect the limited size set
+        if(proportion < Configuration.PROPORTION_MIN || proportion > Configuration.PROPORTION_MAX){
+            player.getClient().print(MinesweeperProtocol.STATUS_650 + " " + MinesweeperProtocol.REPLY_MINE_PROPORTION_NOT_ALLOWED);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+
+        // set the new field size
+        config.setMineProportion(proportion);
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_MINE_PROPORTION_IS + " " + proportion);
+
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+
+    /**
+     * Enables the bonus et malus for the game.
+     *
+     * @param player    : the player that wants to enable the bonus and malus (has to be the admin).
+     *
+     * @return The status of the command
+     */
+    public int enableBonusMalus(Player player){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        config.setBonus(true);
+        config.setMalus(true);
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED);
+
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+
+    /**
+     * disable the bonus et malus for the game.
+     *
+     * @param player    : the player that wants to disable the bonus and malus (has to be the admin).
+     *
+     * @return The status of the command
+     */
+    public int disableBonusMalus(Player player){
+
+        // Check if the player is the admin
+        if(player != admin){
+            player.getClient().print(MinesweeperProtocol.STATUS_450 + " " + MinesweeperProtocol.REPLY_ACTION_DENIED);
+            return MinesweeperProtocol.STATUS_450_I;
+        }
+
+        config.setBonus(false);
+        config.setMalus(false);
+
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED);
+
+
+        return MinesweeperProtocol.STATUS_250_I;
+    }
+
+
+    /**
+     * Send the actual configuration to a player.
+     *
+     * @param player the player to whom the actual configuration will be sent.
+     */
+    public void sendActualConfig(Player player){
+
+        if(player == null)
+            return;
+
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_SCORE_MODE_IS + " " + config.getScore().toString());
+
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS + " " + config.getNbrSlot());
+
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                MinesweeperProtocol.REPLY_MINE_PROPORTION_IS + " " + config.getMineProportion());
+        if(config.isMalus()){
+            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                    MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED);
+        }else {
+            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
+                    MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED);
+        }
+
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +  MinesweeperProtocol.REPLY_SIZE_IS + " " +
+                config.getWidth() + "X" + config.getHeight());
+
+    }
+
+
+
+
+    /***************************               Méthodes Privées               ***************************/
+
+
     /**
      * Send a message to all the player actually in the lobby.
      * @param answer the message to send
@@ -257,7 +521,10 @@ public class Lobby {
         }
     }
 
-    // ===================================        Méthodes Statics        =================================== //
+
+
+    /***************************               Méthodes Statics               ***************************/
+
 
     /**
      * Find a lobby int the lobbies list

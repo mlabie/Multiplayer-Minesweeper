@@ -247,7 +247,8 @@ public class ServantWorker implements Runnable{
                         player = null;
                         lobby  = null;
                     }else {
-                        answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_CREATE;
+                        lobby.sendActualConfig(player);
+                        answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_CREATED;
                     }
                 }
 
@@ -257,11 +258,23 @@ public class ServantWorker implements Runnable{
 
 
 
-            //TODO
+
             // - - - - - - - - - - - - - - -      DISABLE BONUS MALUS      - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_DISABLE_BONUS_MALUS:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_DISABLE_BONUS_MALUS +
-                        "\" has not been implemented yet.";
+                // check if the player has a lobby
+                if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+                    synchronized (lobby.getLobbyLocker()){
+                        if(lobby.disableBonusMalus(player) == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
+                    }
+                }
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
@@ -276,11 +289,23 @@ public class ServantWorker implements Runnable{
                 return -1;
 
 
-            //TODO
+
             // - - - - - - - - - - - - - - -      ENABLE BONUS MALUS      - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_ENABLE_BONUS_MALUS:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_ENABLE_BONUS_MALUS +
-                        "\" has not been implemented yet.";
+                // check if the player has a lobby
+                if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+                    synchronized (lobby.getLobbyLocker()){
+                        if(lobby.enableBonusMalus(player) == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
+                    }
+                }
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
@@ -416,18 +441,35 @@ public class ServantWorker implements Runnable{
                 break;
 
 
-            //TODO
-            // - - - - - - - - - - - - - - -       SET MINE AMOUNT       - - - - - - - - - - - - - - - //
-            case MinesweeperProtocol.CMD_SET_MINE_AMOUNT:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_SET_MINE_AMOUNT +
-                        "\" has not been implemented yet.";
+
+            // - - - - - - - - - - - - - - -     SET MINE PROPORTION     - - - - - - - - - - - - - - - //
+            case MinesweeperProtocol.CMD_SET_MINE_PROPORTION:
+                // check if the number of arguments is correct
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_SET_MINE_PROPORTION){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SET_MINE_PROPORTION){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                // check if the player has a lobby
+                else if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+                    synchronized (lobby.getLobbyLocker()){
+                        if(lobby.setMineProportion(player, Integer.parseInt(parameters[0])) == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
+                    }
+                }
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
 
 
 
-            //TODO
             // - - - - - - - - - - - - - - -      SET PLAYER AMOUNT     - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SET_PLAYER_AMOUNT:
                 // check if the number of arguments is correct
@@ -437,16 +479,18 @@ public class ServantWorker implements Runnable{
                 else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SET_PLAYER_AMOUNT){
                     answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
                 }
-                // check if the player already has a lobby
+                // check if the player has a lobby
                 else if(lobby == null){
                     answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
                 }
                 else{
-
                     synchronized (lobby.getLobbyLocker()){
-
+                        if(lobby.setPlayerAmount(player, Integer.parseInt(parameters[0])) == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
                     }
-                    break;
                 }
 
                 this.print(answer);
@@ -455,22 +499,59 @@ public class ServantWorker implements Runnable{
 
 
 
-            //TODO
+                
             // - - - - - - - - - - - - - - -       SET SCORE MODE      - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SET_SCORE_MODE:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_SET_SCORE_MODE +
-                        "\" has not been implemented yet.";
+                // check if the number of arguments is correct
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_SET_SCORE_MODE){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SET_SCORE_MODE){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                // check if the player has a lobby
+                else if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+                    synchronized (lobby.getLobbyLocker()){
+                        if(lobby.setScoreMode(player, parameters[0]) == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
+                    }
+                }
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
 
 
 
-            //TODO
+
             // - - - - - - - - - - - - - - -          SET SIZE         - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SET_SIZE:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_SET_SIZE +
-                        "\" has not been implemented yet.";
+                // check if the number of arguments is correct
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_SET_SIZE){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SET_SIZE){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                // check if the player has a lobby
+                else if(lobby == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_JOINED;
+                }
+                else{
+                    synchronized (lobby.getLobbyLocker()){
+                        if(lobby.setFieldSize(player, Integer.parseInt(parameters[0]), Integer.parseInt(parameters[1]))
+                                == MinesweeperProtocol.STATUS_250_I){
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        }else{
+                            break;
+                        }
+                    }
+                }
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;

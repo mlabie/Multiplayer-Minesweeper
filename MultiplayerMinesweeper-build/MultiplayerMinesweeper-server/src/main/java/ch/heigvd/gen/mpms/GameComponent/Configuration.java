@@ -24,8 +24,8 @@ public class Configuration {
     public static final int MIN_WIDTH   =  16;
     public static final int MIN_HEIGHT  =  16;
 
-    public static final int DIFFICULTY_MIN  =  5;
-    public static final int DIFFICULTY_MAX  =  30;
+    public static final int PROPORTION_MIN  =  5;
+    public static final int PROPORTION_MAX  =  30;
 
     public static final int MIN_SLOT  =  2;
     public static final int MAX_SLOT  =  4;
@@ -34,7 +34,7 @@ public class Configuration {
 
     private ScoreMode  score;
     private int        nbrSlot;
-    private int        difficulty;
+    private int        mineProportion;
     private boolean    bonus;
     private boolean    malus;
     private int        width;
@@ -45,7 +45,7 @@ public class Configuration {
         this.name           = name;
         this.score          = ScoreMode.STANDARD;
         this.nbrSlot        = MAX_SLOT;
-        this.difficulty     = Difficulty.MEDIUM.getValue();
+        this.mineProportion = Difficulty.MEDIUM.getValue();
         this.bonus          = false;
         this.malus          = false;
         this.width          = 16;
@@ -79,15 +79,15 @@ public class Configuration {
         this.nbrSlot = nbrSlot;
     }
 
-    public int getDifficulty() {
-        return difficulty;
+    public int getMineProportion() {
+        return mineProportion;
     }
 
-    public void setDifficulty(int difficulty) {
-        if(difficulty > DIFFICULTY_MAX || difficulty < DIFFICULTY_MIN){
+    public void setMineProportion(int mineProportion) {
+        if(mineProportion > PROPORTION_MAX || mineProportion < PROPORTION_MIN){
             throw new IllegalArgumentException("This difficulty is not allowed.");
         }
-        this.difficulty = difficulty;
+        this.mineProportion = mineProportion;
     }
 
     public boolean isBonus() {
