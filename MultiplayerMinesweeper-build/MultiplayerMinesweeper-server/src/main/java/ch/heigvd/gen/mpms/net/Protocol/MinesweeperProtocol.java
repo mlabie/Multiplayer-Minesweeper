@@ -43,7 +43,7 @@ public class MinesweeperProtocol {
     public final static String CMD_QUIT_LOBBY           = "QUIT LOBBY";
     public final static String CMD_EXPEL_LOBBY          = "EXPEL LOBBY";
     public final static String CMD_SET_SCORE_MODE       = "SET SCORE MODE";
-    public final static String CMD_SET_MINE_AMOUNT      = "SET MINE AMOUNT";
+    public final static String CMD_SET_MINE_PROPORTION  = "SET MINE PROPORTION";
     public final static String CMD_SET_SIZE             = "SET SIZE";
     public final static String CMD_SET_PLAYER_AMOUNT    = "SET PLAYER AMOUNT";
     public final static String CMD_ENABLE_BONUS_MALUS   = "ENABLE BONUS-MALUS";
@@ -61,7 +61,7 @@ public class MinesweeperProtocol {
             CMD_QUIT_LOBBY,
             CMD_EXPEL_LOBBY,
             CMD_SET_SCORE_MODE,
-            CMD_SET_MINE_AMOUNT,
+            CMD_SET_MINE_PROPORTION,
             CMD_SET_SIZE,
             CMD_SET_PLAYER_AMOUNT,
             CMD_ENABLE_BONUS_MALUS,
@@ -80,7 +80,7 @@ public class MinesweeperProtocol {
     public final static int NBR_PARAM_QUIT_LOBBY           =  0;
     public final static int NBR_PARAM_EXPEL_LOBBY          =  1;
     public final static int NBR_PARAM_SET_SCORE_MODE       =  1;
-    public final static int NBR_PARAM_SET_MINE_AMOUNT      =  1;
+    public final static int NBR_PARAM_SET_MINE_PROPORTION  =  1;
     public final static int NBR_PARAM_SET_SIZE             =  2;
     public final static int NBR_PARAM_SET_PLAYER_AMOUNT    =  1;
     public final static int NBR_PARAM_ENABLE_BONUS_MALUS   =  0;
@@ -92,43 +92,43 @@ public class MinesweeperProtocol {
 
 
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
-    public final static String REPLY_OK                         = "OK";
-    public final static String REPLY_ACTION_DENIED              = "ACTION DENIED";
-    public final static String REPLY_LOBBY_CREATE               = "LOBBY CREATE";
-    public final static String REPLY_LOBBY_NAME_NOT_AVAIABLE    = "LOBBY NAME NOT AVAILABLE";
-    public final static String REPLY_NO_LOBBY_CREATED           = "NO LOBBY CREATED";
-    public final static String REPLY_LOBBY_OPENED               = "LOBBY OPENED";
-    public final static String REPLY_LOBBY_CLOSED               = "LOBBY CLOSED";
-    public final static String REPLY_LOBBY_FULL                 = "LOBBY FULL";
-    public final static String REPLY_ALREADY_IN_A_LOBBY         = "ALREADY IN A LOBBY";
-    public final static String REPLY_LOBBY_NOT_FOUND            = "LOBBY NOT FOUND";
-    public final static String REPLY_PLAYER_NAME_NOT_AVAIBALE   = "PLAYER NAME NOT AVAIABLE";
-    public final static String REPLY_LOBBY_JOINED_BY            = "LOBBY JOINED BY";
-    public final static String REPLY_NO_LOBBY_JOINED            = "NO LOBBY JOINED";
-    public final static String REPLY_LOBBY_LEFT_BY              = "LOBBY LEFT BY";
-    public final static String REPLY_YOU_HAVE_BEEN_EXPELLED     = "YOU HAVE BEEN EXPELLED";
-    public final static String REPLY_PLAYER_NOT_FOUND           = "PLAYER NOT FOUND";
-    public final static String REPLY_MODE_NOT_FOUND             = "MODE NOT FOUND";
-    public final static String REPLY_SCORE_MODE_IS              = "SCORE MODE IS";
-    public final static String REPLY_MINE_AMOUNT_NOT_ALLOWED    = "MINE AMOUNT NOT ALLOWED";
-    public final static String REPLY_MINE_AMOUNT_IS             = "MINE AMOUNT IS";
-    public final static String REPLY_SIZE_NOT_ALLOWED           = "SIZE IS NOT ALLOWED";
-    public final static String REPLY_SIZE_IS                    = "SIZE IS";
-    public final static String REPLY_PLAYER_AMOUNT_NOT_ALLOWED  = "PLAYER AMOUNT NOT ALLOWED";
-    public final static String REPLY_PLAYER_AMOUNT_IS           = "PLAYER AMOUNT IS";
-    public final static String REPLY_BONUS_MALUS_ENABLED        = "BONUS-MALUS ENABLED";
-    public final static String REPLY_BONUS_MALUS_DISABLED       = "BONUS-MALUS DISABLED";
-    public final static String REPLY_GAME_STARTED               = "GAME STARTED";
-    public final static String REPLY_SQUARE_ALREADY_SWEPT       = "SQUARE ALREADY SWEPT";
-    public final static String REPLY_YOU_HAVE_ALREADY_LOST      = "YOU HAVE ALREADY LOST";
-    public final static String REPLY_SQUARE_NOT_FOUND           = "SQUARE NOT FOUND";
-    public final static String REPLY_SQUARE_SWEPT               = "SQUARE SWEPT";
-    public final static String REPLY_PLAYER_SCORE               = "PLAYER SCORE";
-    public final static String REPLY_NOT_IN_A_GAME              = "NOT IN A GAME";
-    public final static String REPLY_PLAYER_LEFT                = "PLAYER LEFT";
-    public final static String REPLY_GAME_FINISHED              = "GAME FINISHED";
-    public final static String REPLY_UNKNOWN_COMMAND            = "UNKNOWN COMMAND";
-    public final static String REPLY_TOO_MANY_ARGUMENTS         = "TOO MANY ARGUMENTS";
-    public final static String REPLY_NOT_ENOUGH_ARGUMENTS       = "NOT ENOUGH ARGUMENTS";
+    public final static String REPLY_OK                          = "OK";
+    public final static String REPLY_ACTION_DENIED               = "ACTION DENIED";
+    public final static String REPLY_LOBBY_CREATED               = "LOBBY CREATED";
+    public final static String REPLY_LOBBY_NAME_NOT_AVAIABLE     = "LOBBY NAME NOT AVAILABLE";
+    public final static String REPLY_NO_LOBBY_CREATED            = "NO LOBBY CREATED";
+    public final static String REPLY_LOBBY_OPENED                = "LOBBY OPENED";
+    public final static String REPLY_LOBBY_CLOSED                = "LOBBY CLOSED";
+    public final static String REPLY_LOBBY_FULL                  = "LOBBY FULL";
+    public final static String REPLY_ALREADY_IN_A_LOBBY          = "ALREADY IN A LOBBY";
+    public final static String REPLY_LOBBY_NOT_FOUND             = "LOBBY NOT FOUND";
+    public final static String REPLY_PLAYER_NAME_NOT_AVAIBALE    = "PLAYER NAME NOT AVAIABLE";
+    public final static String REPLY_LOBBY_JOINED_BY             = "LOBBY JOINED BY";
+    public final static String REPLY_NO_LOBBY_JOINED             = "NO LOBBY JOINED";
+    public final static String REPLY_LOBBY_LEFT_BY               = "LOBBY LEFT BY";
+    public final static String REPLY_YOU_HAVE_BEEN_EXPELLED      = "YOU HAVE BEEN EXPELLED";
+    public final static String REPLY_PLAYER_NOT_FOUND            = "PLAYER NOT FOUND";
+    public final static String REPLY_MODE_NOT_FOUND              = "MODE NOT FOUND";
+    public final static String REPLY_SCORE_MODE_IS               = "SCORE MODE IS";
+    public final static String REPLY_MINE_PROPORTION_NOT_ALLOWED = "MINE PROPORTION NOT ALLOWED";
+    public final static String REPLY_MINE_PROPORTION_IS          = "MINE PROPORTION IS";
+    public final static String REPLY_SIZE_NOT_ALLOWED            = "SIZE IS NOT ALLOWED";
+    public final static String REPLY_SIZE_IS                     = "SIZE IS";
+    public final static String REPLY_PLAYER_AMOUNT_NOT_ALLOWED   = "PLAYER AMOUNT NOT ALLOWED";
+    public final static String REPLY_PLAYER_AMOUNT_IS            = "PLAYER AMOUNT IS";
+    public final static String REPLY_BONUS_MALUS_ENABLED         = "BONUS-MALUS ENABLED";
+    public final static String REPLY_BONUS_MALUS_DISABLED        = "BONUS-MALUS DISABLED";
+    public final static String REPLY_GAME_STARTED                = "GAME STARTED";
+    public final static String REPLY_SQUARE_ALREADY_SWEPT        = "SQUARE ALREADY SWEPT";
+    public final static String REPLY_YOU_HAVE_ALREADY_LOST       = "YOU HAVE ALREADY LOST";
+    public final static String REPLY_SQUARE_NOT_FOUND            = "SQUARE NOT FOUND";
+    public final static String REPLY_SQUARE_SWEPT                = "SQUARE SWEPT";
+    public final static String REPLY_PLAYER_SCORE                = "PLAYER SCORE";
+    public final static String REPLY_NOT_IN_A_GAME               = "NOT IN A GAME";
+    public final static String REPLY_PLAYER_LEFT                 = "PLAYER LEFT";
+    public final static String REPLY_GAME_FINISHED               = "GAME FINISHED";
+    public final static String REPLY_UNKNOWN_COMMAND             = "UNKNOWN COMMAND";
+    public final static String REPLY_TOO_MANY_ARGUMENTS          = "TOO MANY ARGUMENTS";
+    public final static String REPLY_NOT_ENOUGH_ARGUMENTS        = "NOT ENOUGH ARGUMENTS";
 
 }
