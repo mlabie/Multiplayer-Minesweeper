@@ -1,4 +1,4 @@
-package ch.heigvd.gen.mpms.net.server;
+package ch.heigvd.gen.mpms.model.net.server;
 
 
 import java.net.Socket;
