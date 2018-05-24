@@ -15,10 +15,9 @@ import javafx.scene.control.TextField;
 import java.net.Socket;
 
 
-public class mainWindowController {
+public class MainWindowController {
 
-    final static String FIELD_ERROR_BACKGROUND_COLOR        = "#FFB0B0";
-    final static String FIELD_DEFAULT_BACKGROUND_COLOR      = "#FFFFFF";
+
 
 
     @FXML
@@ -117,14 +116,90 @@ public class mainWindowController {
         //create a minewSweeperClient.
         mineSweeperClient = new MineSweeperClient(senderWorker, receptionistWorker);
 
+        mineSweeperClient.setMainWindowController(this);
+        receptionistWorker.setMineSweeperClient(mineSweeperClient);
+
+        // start the receptionnist thread.
+        mineSweeperClient.getReceptionistWorker().run();
+
+
         mineSweeperClient.getSenderWorker().joinLobby(lobbyName, playerName);
 
-        receptionistWorker.setMineSweeperClient(mineSweeperClient);
-        //mineSweeperClient.getSenderWorker().disconnect();
     }
 
     public void createLobbyButtonClicked(ActionEvent actionEvent) {
 
+        String playerName;
+        String lobbyName;
+        String serverAddress;
+        String serverPort;
+        int    port;
+
+        Socket clientSocket;
+
+        MineSweeperClient  mineSweeperClient;
+        SenderWorker       senderWorker;
+        ReceptionistWorker receptionistWorker;
+
+
+        playerName    = playerNameField.getText();
+        lobbyName     = lobbyNameField.getText();
+        serverAddress = serverAddressField.getText();
+        serverPort    = serverPortField.getText();
+
+        // reset de info label
+        infoLabel.setText(MainWindowStyle.INFO_DEFAULT);
+
+
+        // Check if the field are filld
+        if(!fieldAreFilld(playerName, lobbyName, serverAddress, serverPort)){
+            infoLabel.setText(MainWindowStyle.INFO_EMPTY_FIELD);
+            return;
+        }
+
+        // Check if the port is a positive integer.
+        port = castPort(serverPort);
+
+        if(port < 0){
+            infoLabel.setText(MainWindowStyle.INFO_PORT_NOT_POSITIVE_INTEGER);
+            return;
+        }
+
+
+        senderWorker = new SenderWorker();
+
+        // Try to connect
+        clientSocket = senderWorker.connect(serverAddress, Integer.parseInt(serverPort));
+
+        // If connection was not possible...
+        if(clientSocket == null){
+            infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
+            return;
+        }
+
+        // try to create a receptionistWorker.
+        try {
+            receptionistWorker = new ReceptionistWorker(clientSocket);
+        }catch (NullPointerException e){
+            infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
+            return;
+        }
+
+        Thread thread = new Thread(receptionistWorker);
+
+
+        //create a minewSweeperClient.
+        mineSweeperClient = new MineSweeperClient(senderWorker, receptionistWorker);
+
+        mineSweeperClient.setMainWindowController(this);
+        receptionistWorker.setMineSweeperClient(mineSweeperClient);
+
+
+        // start the receptionnist thread.
+        mineSweeperClient.getReceptionistWorker().run();
+
+
+        mineSweeperClient.getSenderWorker().createLobby(lobbyName, playerName);
     }
 
     /**
@@ -215,7 +290,7 @@ public class mainWindowController {
      */
     private void setFieldErrorBackground(TextField field){
         if(field != null)
-            field.setStyle("-fx-control-inner-background: " + FIELD_ERROR_BACKGROUND_COLOR);
+            field.setStyle("-fx-control-inner-background: " + MainWindowStyle.FIELD_ERROR_BACKGROUND_COLOR);
     }
 
 
@@ -226,7 +301,7 @@ public class mainWindowController {
      */
     private void setFieldDefaultBackground(TextField field){
         if(field != null)
-            field.setStyle("-fx-control-inner-background: " + FIELD_DEFAULT_BACKGROUND_COLOR);
+            field.setStyle("-fx-control-inner-background: " + MainWindowStyle.FIELD_DEFAULT_BACKGROUND_COLOR);
     }
 
 

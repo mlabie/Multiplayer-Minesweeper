@@ -1,22 +1,23 @@
 package ch.heigvd.gen.mpms;
 
+import ch.heigvd.gen.mpms.view.MainWindowView;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import ch.heigvd.gen.mpms.view.MainWindowView;
 
-
-import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
-
-public class MinesweeperClient extends Application{
+public class Launcher extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception{
 
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/mainWindow.fxml"));
+        loader.setLocation(getClass().getResource("/window/mainWindow.fxml"));
         Parent root = loader.load();
 
         // Scene
@@ -30,6 +31,15 @@ public class MinesweeperClient extends Application{
         // Show
         primaryStage.setScene(scene);
         primaryStage.show();
+
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event){
+
+            }
+        });
+
     }
 
     public static void main(String args[]){
