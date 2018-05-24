@@ -1,4 +1,5 @@
-package ch.heigvd.gen.mpms.net.Protocol;
+package ch.heigvd.gen.mpms.model.net.Protocol;
+
 
 /**
  * @brief: Set of command, status, and answer that are used in the multiplayer
@@ -8,13 +9,18 @@ package ch.heigvd.gen.mpms.net.Protocol;
  */
 public class MinesweeperProtocol {
 
-    public final static String VERSION   = "1.0";
-    public final static int DEFAULT_PORT = 1001;
+    public final static String VERSION              = "1.0";
+    public final static int DEFAULT_PORT            = 1001;
 
-    public final static String EOL                  = "\r\n";
-    public final static char   CARRIAGE_RETURN      = '\r';
-    public final static String DELIMITER            = " ";
-    public final static String MULTIPLE_DELIMITER   = "\\b" + DELIMITER + "+";
+    public final static int MIN_PORT_RANGE          = 0;
+    public final static int MAX_PORT_RANGE          = 65535;
+
+
+    public final static String EOL                     = "\r\n";
+    public final static char   CARRIAGE_RETURN         = '\r';
+    public final static String DELIMITER               = " ";
+    public final static String REPLY_PARAM_DELIMITER   = " : ";
+    public final static String MULTIPLE_DELIMITER      = "\\b" + DELIMITER + "+";
 
 
     // - - - - - - - - - - -          Status          - - - - - - - - - - - //
@@ -26,13 +32,13 @@ public class MinesweeperProtocol {
     public final static int STATUS_650_I = 650;
     public final static int STATUS_750_I = 750;
 
-    public final static String STATUS_220 = String.valueOf(STATUS_220_I);
-    public final static String STATUS_250 = String.valueOf(STATUS_250_I);
-    public final static String STATUS_350 = String.valueOf(STATUS_350_I);
-    public final static String STATUS_450 = String.valueOf(STATUS_450_I);
-    public final static String STATUS_550 = String.valueOf(STATUS_550_I);
-    public final static String STATUS_650 = String.valueOf(STATUS_650_I);
-    public final static String STATUS_750 = String.valueOf(STATUS_750_I);
+    public final static String STATUS_220 = "220";
+    public final static String STATUS_250 = "250";
+    public final static String STATUS_350 = "350";
+    public final static String STATUS_450 = "450";
+    public final static String STATUS_550 = "550";
+    public final static String STATUS_650 = "650";
+    public final static String STATUS_750 = "750";
 
 
     // - - - - - - - - - - -          Command         - - - - - - - - - - - //

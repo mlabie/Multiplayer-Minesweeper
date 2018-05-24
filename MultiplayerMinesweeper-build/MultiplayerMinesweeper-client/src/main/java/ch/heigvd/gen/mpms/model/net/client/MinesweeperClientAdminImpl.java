@@ -1,4 +1,4 @@
-package ch.heigvd.gen.mpms.net.client;
+package ch.heigvd.gen.mpms.model.net.client;
 
 public class MinesweeperClientAdminImpl extends MinesweeperClientImpl {
 

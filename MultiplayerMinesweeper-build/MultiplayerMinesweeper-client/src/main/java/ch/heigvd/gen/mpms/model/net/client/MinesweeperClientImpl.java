@@ -1,11 +1,11 @@
-package ch.heigvd.gen.mpms.net.client;
+package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
 
 import java.io.*;
 import java.net.Socket;
 
-public class MinesweeperClientImpl implements IMinesweeperClient{
+public class MinesweeperClientImpl /*implements IMinesweeperClient*/{
 	protected Socket clientSocket;
 	protected PrintWriter out;
 	protected BufferedReader in;
@@ -17,7 +17,7 @@ public class MinesweeperClientImpl implements IMinesweeperClient{
 
 	}
 
-	@Override
+	//@Override
 	public void connect(String addressServer, int port){
 		try {
 			clientSocket = new Socket(addressServer, port);
@@ -29,14 +29,14 @@ public class MinesweeperClientImpl implements IMinesweeperClient{
 		}
 	}
 
-	@Override
+	//@Override
 	public void disconnect() {
 		connected = false;
 		cleanup();
 	}
 
 
-	@Override
+	//@Override
 	public boolean isConnected() {
 		return connected;
 	}
@@ -106,5 +106,7 @@ public class MinesweeperClientImpl implements IMinesweeperClient{
 			e.printStackTrace();
 		}
 	}
+
+
 
 }

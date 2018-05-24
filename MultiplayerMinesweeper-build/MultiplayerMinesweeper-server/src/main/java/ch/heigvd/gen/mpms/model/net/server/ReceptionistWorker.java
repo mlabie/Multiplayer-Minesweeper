@@ -1,11 +1,11 @@
-package ch.heigvd.gen.mpms.net.server;
+package ch.heigvd.gen.mpms.model.net.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
 /**
  * This class imlements the receptionnist of the server. For each client

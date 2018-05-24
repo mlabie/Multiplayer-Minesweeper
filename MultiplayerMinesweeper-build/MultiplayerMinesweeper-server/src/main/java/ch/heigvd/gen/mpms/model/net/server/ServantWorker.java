@@ -1,15 +1,13 @@
-package ch.heigvd.gen.mpms.net.server;
+package ch.heigvd.gen.mpms.model.net.server;
 
 import ch.heigvd.gen.mpms.GameComponent.Player;
 import ch.heigvd.gen.mpms.lobby.Lobby;
-import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 /**
  * This class implements a Servant that will work only with one client. It will manage the command
@@ -499,7 +497,7 @@ public class ServantWorker implements Runnable{
 
 
 
-                
+
             // - - - - - - - - - - - - - - -       SET SCORE MODE      - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SET_SCORE_MODE:
                 // check if the number of arguments is correct

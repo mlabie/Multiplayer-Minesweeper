@@ -1,7 +1,7 @@
 package ch.heigvd.gen.mpms;
 
-import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
-import ch.heigvd.gen.mpms.net.server.ReceptionistWorker;
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.model.net.server.ReceptionistWorker;
 
 public class MinesweeperServer {
     public static void main(String args[]){
