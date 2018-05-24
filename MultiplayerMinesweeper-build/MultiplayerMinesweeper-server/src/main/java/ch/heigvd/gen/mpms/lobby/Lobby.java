@@ -2,7 +2,7 @@ package ch.heigvd.gen.mpms.lobby;
 
 import ch.heigvd.gen.mpms.GameComponent.Player;
 import ch.heigvd.gen.mpms.GameComponent.Configuration;
-import ch.heigvd.gen.mpms.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
 import java.util.ArrayList;
 
@@ -150,12 +150,12 @@ public class Lobby {
 
             sendActualConfig(player);
 
-            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
-                                     MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " + admin.getPlayerName());
+            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
+                    MinesweeperProtocol.REPLY_PARAM_DELIMITER + admin.getPlayerName());
 
             for(Player p : players){
-                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
-                                         MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " + p.getPlayerName());
+                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
+                        MinesweeperProtocol.REPLY_PARAM_DELIMITER  + p.getPlayerName());
             }
 
 
@@ -166,8 +166,8 @@ public class Lobby {
 
 
             // Inform all the player that a player has joined the lobby.
-            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY + " " +
-                                 player.getPlayerName());
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
+                    MinesweeperProtocol.REPLY_PARAM_DELIMITER +  player.getPlayerName());
 
 
             return MinesweeperProtocol.STATUS_250_I;
@@ -197,8 +197,8 @@ public class Lobby {
             players.remove(player);
             nbrPlayer--;
 
-            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                                 MinesweeperProtocol.REPLY_LOBBY_LEFT_BY + " " + name);
+            sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_LEFT_BY +
+                    MinesweeperProtocol.REPLY_PARAM_DELIMITER + name);
         }
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -242,8 +242,8 @@ public class Lobby {
         }
 
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_LOBBY_LEFT_BY + " " + name);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_LEFT_BY +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER  + name);
 
         return MinesweeperProtocol.STATUS_250_I;
     }
@@ -297,8 +297,8 @@ public class Lobby {
 
         // Set the new player amount
         config.setNbrSlot(amount);
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS + " " + amount);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + amount);
 
 
         // We expel all the player that are in excess
@@ -338,8 +338,8 @@ public class Lobby {
         config.setWidth(width);
         config.setHeight(height);
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_SIZE_IS + " " + width + "X" + height);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_SIZE_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + width + "X" + height);
 
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -378,8 +378,8 @@ public class Lobby {
             return MinesweeperProtocol.STATUS_650_I;
         }
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_SCORE_MODE_IS + " " + scoreMode);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_SCORE_MODE_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + scoreMode);
 
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -413,8 +413,8 @@ public class Lobby {
         // set the new field size
         config.setMineProportion(proportion);
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_MINE_PROPORTION_IS + " " + proportion);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_MINE_PROPORTION_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + proportion);
 
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -439,8 +439,7 @@ public class Lobby {
         config.setBonus(true);
         config.setMalus(true);
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED);
 
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -465,8 +464,7 @@ public class Lobby {
         config.setBonus(false);
         config.setMalus(false);
 
-        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED);
+        sendAllPlayer(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED);
 
 
         return MinesweeperProtocol.STATUS_250_I;
@@ -483,14 +481,14 @@ public class Lobby {
         if(player == null)
             return;
 
-        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_SCORE_MODE_IS + " " + config.getScore().toString());
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_SCORE_MODE_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + config.getScore().toString());
 
-        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS + " " + config.getNbrSlot());
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER  + config.getNbrSlot());
 
-        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
-                MinesweeperProtocol.REPLY_MINE_PROPORTION_IS + " " + config.getMineProportion());
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +  MinesweeperProtocol.REPLY_MINE_PROPORTION_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER  + config.getMineProportion());
         if(config.isMalus()){
             player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +
                     MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED);
@@ -499,8 +497,8 @@ public class Lobby {
                     MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED);
         }
 
-        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +  MinesweeperProtocol.REPLY_SIZE_IS + " " +
-                config.getWidth() + "X" + config.getHeight());
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " +  MinesweeperProtocol.REPLY_SIZE_IS +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + config.getWidth() + "X" + config.getHeight());
 
     }
 

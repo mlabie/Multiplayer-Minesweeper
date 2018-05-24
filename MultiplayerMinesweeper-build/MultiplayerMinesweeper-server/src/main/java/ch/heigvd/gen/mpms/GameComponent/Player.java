@@ -1,6 +1,6 @@
 package ch.heigvd.gen.mpms.GameComponent;
 
-import ch.heigvd.gen.mpms.net.server.ServantWorker;
+import ch.heigvd.gen.mpms.model.net.server.ServantWorker;
 
 /**
  * @brief: This class represent a player, which is represented by a name, a ServantWorker, and the score
