@@ -158,14 +158,14 @@
                   </GridPane>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <center>
-                        <Label fx:id="infoLabel" text="tmp" BorderPane.alignment="CENTER" />
+                        <Label fx:id="infoLabel" BorderPane.alignment="CENTER" />
                      </center>
                   </BorderPane>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <center>
                         <ImageView fitHeight="150.0" fitWidth="167.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                            <image>
-                              <Image url="@figures/jaquetPQ.png" />
+                              <Image url="@../figures/jaquetPQ.png" />
                            </image>
                         </ImageView>
                      </center>

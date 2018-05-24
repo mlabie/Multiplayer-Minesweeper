@@ -5,9 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<AnchorPane fx:id="mainPane" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gen.mpms.controller.mainWindowController">
+<AnchorPane fx:id="mainPane" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gen.mpms.controller.MainWindowController">
     <children>
         <VBox fx:id="paneTools" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
@@ -26,7 +24,7 @@
         <Label layoutX="100.0" layoutY="242.0" text="Server Port" />
         <Label layoutX="86.0" layoutY="292.0" text="Lobby Name" />
 
-        <Button fx:id="joinLobby" style="-fx-background-color: #ff9999" layoutX="179.0" layoutY="333.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="111.0" text="Join Lobby" />
-        <Button fx:id="createLobby" style="-fx-background-color: #ff9999" layoutX="310.0" layoutY="333.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="111.0" text="Create Lobby" />
+        <Button fx:id="joinLobby" layoutX="179.0" layoutY="333.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="111.0" style="-fx-background-color: #ff9999" text="Join Lobby" />
+        <Button fx:id="createLobby" layoutX="310.0" layoutY="333.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="111.0" style="-fx-background-color: #ff9999" text="Create Lobby" />
     </children>
 </AnchorPane>
