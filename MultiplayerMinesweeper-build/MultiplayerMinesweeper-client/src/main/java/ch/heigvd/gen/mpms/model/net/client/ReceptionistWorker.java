@@ -64,13 +64,18 @@ public class ReceptionistWorker implements Runnable {
 
             while (clientSocket.isConnected() && run == 0) {
 
+
+                System.out.println(clientSocket.isConnected());
                 answer = br.readLine();
                 LOG.log(Level.INFO, answer);
+
+                System.out.println("pouet_4");
 
                 // send the answer to the answer manager.
                 run = answerManager(answer);
 
             }
+
 
         }catch (IOException e){
             LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -92,21 +97,23 @@ public class ReceptionistWorker implements Runnable {
      *  - unknownCommandManager       :       750
      *
      *
-     * @param answer        : The answer received from the server
+     * @param fullAnswer    : The entire answer received from the server, with the status command.
      *
      * @return
      */
-    private int answerManager(String answer){
+    private int answerManager(String fullAnswer){
 
 
         String status;
         String message;
         String parameters;
+        String answer;          // The answer without the status
 
         String[] splitedAnswer;
 
-        status  = answer.substring(0, answer.indexOf(MinesweeperProtocol.DELIMITER));
-        answer  = answer.replaceFirst(status + MinesweeperProtocol.DELIMITER, "");
+
+        status  = fullAnswer.substring(0, fullAnswer.indexOf(MinesweeperProtocol.DELIMITER));
+        answer  = fullAnswer.replaceFirst(status + MinesweeperProtocol.DELIMITER, "");
 
         splitedAnswer = answer.split(MinesweeperProtocol.REPLY_PARAM_DELIMITER);
 
@@ -129,7 +136,6 @@ public class ReceptionistWorker implements Runnable {
         switch (status){
 
             case MinesweeperProtocol.STATUS_220 :
-                confirmationManager(message, parameters);
                 break;
             case MinesweeperProtocol.STATUS_250 :
                 confirmationManager(message, parameters);
@@ -177,6 +183,7 @@ public class ReceptionistWorker implements Runnable {
 
 
             case  MinesweeperProtocol.REPLY_LOBBY_CREATED:
+                //mineSweeperClient.getMainController().getMainWindowController().setInfoLabel("pouet !");
                 LOG.log(Level.INFO, "Unhandled command answer yet.");
                 break;
 
