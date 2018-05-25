@@ -4,6 +4,7 @@ import ch.heigvd.gen.mpms.controller.MainController;
 import ch.heigvd.gen.mpms.controller.MainWindowController;
 import ch.heigvd.gen.mpms.controller.WindowController;
 
+import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -15,26 +16,28 @@ import javafx.stage.WindowEvent;
 
 public class Launcher extends Application{
 
+    private Scene               scene;
+    private MineSweeperClient   mineSweeperClient;
+    private MainController      mainController;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        Scene               scene;
-        WindowController    windowController;
-
 
         // Initialisation.
-        scene            = new Scene(new VBox());
-        windowController = new WindowController(scene);
+        scene             = new Scene(new VBox());
+        mineSweeperClient = new MineSweeperClient();
+        mainController    = new MainController(mineSweeperClient, scene);
 
 
         // Ajout des différents fenêtre.
-        windowController.addWindow(WindowController.MAIN_WINDOW,
+        mainController.getWindowController().addWindow(WindowController.MAIN_WINDOW,
                 (Pane)FXMLLoader.load(getClass().getResource( "/window/mainWindow.fxml")));
-        windowController.addWindow(WindowController.LOBBY_WINDOW,
+        mainController.getWindowController().addWindow(WindowController.LOBBY_WINDOW,
                 (Pane)FXMLLoader.load(getClass().getResource( "/window/lobbyWindow.fxml")));
 
 
-        windowController.activate(WindowController.MAIN_WINDOW);
+        mainController.getWindowController().activate(WindowController.MAIN_WINDOW);
 
         // Set window title
         primaryStage.setTitle("Multiplayer Minesweeper");

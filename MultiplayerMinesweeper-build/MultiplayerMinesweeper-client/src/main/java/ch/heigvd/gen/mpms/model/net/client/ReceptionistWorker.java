@@ -183,8 +183,8 @@ public class ReceptionistWorker implements Runnable {
 
 
             case  MinesweeperProtocol.REPLY_LOBBY_CREATED:
-                //mineSweeperClient.getMainController().getMainWindowController().setInfoLabel("pouet !");
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                mineSweeperClient.getMainController().getMainWindowController().setInfoLabel("pouet !");
+                //LOG.log(Level.INFO, "Unhandled command answer yet.");
                 break;
 
 

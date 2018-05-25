@@ -1,48 +1,53 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.*;
-import sun.applet.Main;
 
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MineSweeperClient {
 
+    final static Logger LOG = Logger.getLogger(ReceptionistWorker.class.getName());
+
     private SenderWorker       senderWorker;
     private ReceptionistWorker receptionistWorker;
-    Thread  tmp;
+    Thread  receptionnistThread;
 
-    //private MainController     mainController;
-    private MainWindowController mainWindowController;
+    private MainController       mainController;
+    //private MainWindowController mainWindowController;
 
     /**
      *
      */
     public MineSweeperClient(){
-        this.senderWorker       = null;
-        this.receptionistWorker = null;
-        //mainController          = new MainController();
-        this.mainWindowController    = null;
+        this.senderWorker            = null;
+        this.receptionistWorker      = null;
+        this.mainController          = null;
+        //this.mainWindowController    = null;
     }
 
-    /**
-     *
-     * @param mainWindowController
-     */
-    public void setMainWindowController(MainWindowController mainWindowController) {
+
+    /*public void setMainWindowController(MainWindowController mainWindowController) {
         this.mainWindowController = mainWindowController;
     }
 
     public MainWindowController getMainWindowController() {
         return mainWindowController;
+    }*/
+
+
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     /**
      *
      * @return
      */
-    /*public MainController getMainController() {
+    public MainController getMainController() {
         return mainController;
-    }/*
+    }
 
 
     /**
@@ -116,10 +121,19 @@ public class MineSweeperClient {
         this.senderWorker       = senderWorker;
         this.receptionistWorker = receptionistWorker;
 
-        tmp = new Thread(receptionistWorker);
+        receptionnistThread = new Thread(receptionistWorker);
 
         // start the receptionnist thread.
-        tmp.start();
+        receptionnistThread.start();
+
+        // Wait that the thread sends welcome message.
+        /*try {
+            receptionistWorker.wait();
+        }catch (InterruptedException e){
+            LOG.log(Level.SEVERE, e.getMessage(), e);
+            return false;
+        }*/
+
 
         return  true;
     }
@@ -137,6 +151,7 @@ public class MineSweeperClient {
 
 
     public void joinLobby(String lobbyName, String playerName){
+
         senderWorker.joinLobby(lobbyName, playerName);
     }
 

@@ -14,8 +14,7 @@ import javafx.scene.control.TextField;
 
 public class MainWindowController {
 
-
-
+    private MineSweeperClient mineSweeperClient;
 
     @FXML
     private TextField playerNameField;
@@ -39,6 +38,9 @@ public class MainWindowController {
     private Button createLobbyButton;
 
 
+    public void setMineSweeperClient(MineSweeperClient mineSweeperClient) {
+        this.mineSweeperClient = mineSweeperClient;
+    }
 
     public void initialize() {
         infoLabel.setText(MainWindowStyle.INFO_DEFAULT);
@@ -108,7 +110,7 @@ public class MainWindowController {
         String serverPort;
         int    port;
 
-        MineSweeperClient  mineSweeperClient;
+        //MineSweeperClient  mineSweeperClient;
 
 
         playerName    = playerNameField.getText();
@@ -135,15 +137,11 @@ public class MainWindowController {
         }
 
 
-        mineSweeperClient = new MineSweeperClient();
-
         // try to connect
         if(!mineSweeperClient.connect(serverAddress,port)){
             infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
             return;
         }
-
-        mineSweeperClient.setMainWindowController(this);
 
         mineSweeperClient.createLobby(lobbyName, playerName);
     }
