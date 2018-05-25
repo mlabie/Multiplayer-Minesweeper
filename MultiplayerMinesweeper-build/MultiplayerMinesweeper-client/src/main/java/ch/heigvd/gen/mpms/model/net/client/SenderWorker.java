@@ -17,9 +17,9 @@ public class SenderWorker {
 
     final static Logger LOG = Logger.getLogger(ReceptionistWorker.class.getName());
 
-    private Socket clientSocket;
+    private Socket      clientSocket;
     private PrintWriter pw;
-    private boolean connected;
+    private boolean     connected;
 
 
     public SenderWorker(){
@@ -90,6 +90,7 @@ public class SenderWorker {
                 MinesweeperProtocol.DELIMITER + playerName;
 
         this.print(command);
+        LOG.log(Level.INFO, command);
 
         return 0;
     }
@@ -114,6 +115,7 @@ public class SenderWorker {
                 MinesweeperProtocol.DELIMITER + playerName;
 
         this.print(command);
+        LOG.log(Level.INFO, command);
 
         return 0;
     }

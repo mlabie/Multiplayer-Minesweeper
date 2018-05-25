@@ -3,8 +3,6 @@ package ch.heigvd.gen.mpms.controller;
 
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
-import ch.heigvd.gen.mpms.model.net.client.ReceptionistWorker;
-import ch.heigvd.gen.mpms.model.net.client.SenderWorker;
 import ch.heigvd.gen.mpms.view.MainWindowStyle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-import java.net.Socket;
 
 
 public class MainWindowController {
@@ -62,11 +59,7 @@ public class MainWindowController {
         String serverPort;
         int    port;
 
-        Socket clientSocket;
-
         MineSweeperClient  mineSweeperClient;
-        SenderWorker       senderWorker;
-        ReceptionistWorker receptionistWorker;
 
 
         playerName    = playerNameField.getText();
@@ -93,37 +86,17 @@ public class MainWindowController {
         }
 
 
-        senderWorker = new SenderWorker();
+        mineSweeperClient = new MineSweeperClient();
 
-        // Try to connect
-        clientSocket = senderWorker.connect(serverAddress, Integer.parseInt(serverPort));
-
-        // If connection was not possible...
-        if(clientSocket == null){
+        // try to connect
+        if(!mineSweeperClient.connect(serverAddress,port)){
             infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
             return;
         }
 
-        // try to create a receptionistWorker.
-        try {
-            receptionistWorker = new ReceptionistWorker(clientSocket);
-        }catch (NullPointerException e){
-            infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
-            return;
-        }
+        //mineSweeperClient.setMainWindowController(this);
 
-
-        //create a minewSweeperClient.
-        mineSweeperClient = new MineSweeperClient(senderWorker, receptionistWorker);
-
-        mineSweeperClient.setMainWindowController(this);
-        receptionistWorker.setMineSweeperClient(mineSweeperClient);
-
-        // start the receptionnist thread.
-        mineSweeperClient.getReceptionistWorker().run();
-
-
-        mineSweeperClient.getSenderWorker().joinLobby(lobbyName, playerName);
+        mineSweeperClient.joinLobby(lobbyName, playerName);
 
     }
 
@@ -135,11 +108,7 @@ public class MainWindowController {
         String serverPort;
         int    port;
 
-        Socket clientSocket;
-
         MineSweeperClient  mineSweeperClient;
-        SenderWorker       senderWorker;
-        ReceptionistWorker receptionistWorker;
 
 
         playerName    = playerNameField.getText();
@@ -166,40 +135,17 @@ public class MainWindowController {
         }
 
 
-        senderWorker = new SenderWorker();
+        mineSweeperClient = new MineSweeperClient();
 
-        // Try to connect
-        clientSocket = senderWorker.connect(serverAddress, Integer.parseInt(serverPort));
-
-        // If connection was not possible...
-        if(clientSocket == null){
+        // try to connect
+        if(!mineSweeperClient.connect(serverAddress,port)){
             infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
             return;
         }
-
-        // try to create a receptionistWorker.
-        try {
-            receptionistWorker = new ReceptionistWorker(clientSocket);
-        }catch (NullPointerException e){
-            infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
-            return;
-        }
-
-        Thread thread = new Thread(receptionistWorker);
-
-
-        //create a minewSweeperClient.
-        mineSweeperClient = new MineSweeperClient(senderWorker, receptionistWorker);
 
         mineSweeperClient.setMainWindowController(this);
-        receptionistWorker.setMineSweeperClient(mineSweeperClient);
 
-
-        // start the receptionnist thread.
-        mineSweeperClient.getReceptionistWorker().run();
-
-
-        mineSweeperClient.getSenderWorker().createLobby(lobbyName, playerName);
+        mineSweeperClient.createLobby(lobbyName, playerName);
     }
 
     /**
