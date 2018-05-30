@@ -48,7 +48,7 @@ public class ServantWorker implements Runnable{
         try {
             this.clientSocket = clientSocket;
             br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            pw = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+            pw = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
         }
@@ -605,7 +605,8 @@ public class ServantWorker implements Runnable{
      * @param answer    : The answer to send
      */
     public void print(String answer){
-        pw.println(answer + MinesweeperProtocol.CARRIAGE_RETURN);
+        pw.println(answer);
+        pw.flush();
     }
 
 
