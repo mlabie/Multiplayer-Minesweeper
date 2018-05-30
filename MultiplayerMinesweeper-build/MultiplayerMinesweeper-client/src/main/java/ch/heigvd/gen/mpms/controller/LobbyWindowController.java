@@ -97,7 +97,7 @@ public class LobbyWindowController {
         scoreModeSelect.setItems(scoreModeChoices);
 
 
-        final List options = choices.getItems();
+        /*final List options = choices.getItems();
 
         playerAmountSelect.
         choices.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener() {
@@ -105,7 +105,7 @@ public class LobbyWindowController {
                 System.out.println("Old Selected Option: " + options.get(oldSelected.intValue()));
                 System.out.println("New Selected Option: " +options.get(newSelected.intValue()));
             }
-        });
+        });*/
     }
 
 
@@ -238,7 +238,7 @@ public class LobbyWindowController {
     public void playerAmountSelected(ActionEvent actionEvent) {
         synchronized (lobbyWindowLock){
             try {
-                mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(playerAmountSelect.getValue()));
+                //mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(playerAmountSelect.getValue()));
             }catch (NumberFormatException e){
                 return;
             }
