@@ -58,6 +58,8 @@ public class LobbyWindowController {
     private Button startGameButton;
 
 
+
+
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
@@ -93,6 +95,17 @@ public class LobbyWindowController {
         playerAmountSelect.setItems(playerAmountChoices);
         fieldSizeSelect.setItems(fieldSizeChoices);
         scoreModeSelect.setItems(scoreModeChoices);
+
+
+        final List options = choices.getItems();
+
+        playerAmountSelect.
+        choices.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener() {
+            @Override public void changed(ObservableValue ov, Number oldSelected, Number newSelected) {
+                System.out.println("Old Selected Option: " + options.get(oldSelected.intValue()));
+                System.out.println("New Selected Option: " +options.get(newSelected.intValue()));
+            }
+        });
     }
 
 
@@ -213,6 +226,23 @@ public class LobbyWindowController {
             }else {
                 mainController.getMineSweeperClient().closeLobby();
             }
+        }
+    }
+
+    /**
+     * @brief Function called when a choice in the "playerAmountSelect" choice box is selected. .
+     *        Sends a command to the server to change the player Amount.
+     *
+     * @param actionEvent
+     */
+    public void playerAmountSelected(ActionEvent actionEvent) {
+        synchronized (lobbyWindowLock){
+            try {
+                mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(playerAmountSelect.getValue()));
+            }catch (NumberFormatException e){
+                return;
+            }
+
         }
     }
 

@@ -174,7 +174,6 @@ public class MineSweeperClient {
 
 
     public void joinLobby(String lobbyName, String playerName){
-
         senderWorker.joinLobby(lobbyName, playerName);
     }
 

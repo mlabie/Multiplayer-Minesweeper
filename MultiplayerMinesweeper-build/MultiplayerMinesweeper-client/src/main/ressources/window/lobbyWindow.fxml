@@ -124,7 +124,7 @@
                                     </BorderPane>
                                     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                        <center>
-                                          <ChoiceBox fx:id="playerAmountSelect" prefWidth="80.0" BorderPane.alignment="CENTER_LEFT" />
+                                          <ChoiceBox fx:id="playerAmountSelect"  prefWidth="80.0" BorderPane.alignment="CENTER_LEFT" />
                                        </center></BorderPane>
                                     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                                        <center>

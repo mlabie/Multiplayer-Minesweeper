@@ -52,9 +52,10 @@ public class SenderWorker {
     }
 
     /**
-     * Disconnects to a remot server
+     * @brief send a command to the server to disconnect from it.
      *
-     * @return
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
      */
     public int disconnect() {
         String command;
@@ -122,6 +123,14 @@ public class SenderWorker {
     }
 
 
+    /**
+     * @brief Sends a command to server to open the lobby in which the player is in.
+     *        The serveur will check that the player is in a lobby, and that the player
+     *        is the admin.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
     public int openLobby(){
 
         String command;
@@ -136,6 +145,14 @@ public class SenderWorker {
     }
 
 
+    /**
+     * @brief Sends a command to server to close the lobby in which the player is in.
+     *        The serveur will check that the player is in a lobby, and that the player
+     *        is the admin.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
     public int closeLobby(){
 
         String command;
@@ -149,7 +166,12 @@ public class SenderWorker {
         return 0;
     }
 
-
+    /**
+     * @brief Sends a command to server to set the actual Player Amount.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
     public int setPlayerAmount(int playerAmount){
         String command;
 
@@ -164,7 +186,9 @@ public class SenderWorker {
     }
 
 
-
+    /**
+     * @brief cleans up the ressources of the Sender.
+     */
     public void cleanup(){
         try {
             if (pw != null)
@@ -172,6 +196,8 @@ public class SenderWorker {
 
             if (clientSocket != null)
                 clientSocket.close();
+
+            connected = false;
 
         } catch (IOException e) {
             LOG.log(Level.SEVERE, e.getMessage(), e);
