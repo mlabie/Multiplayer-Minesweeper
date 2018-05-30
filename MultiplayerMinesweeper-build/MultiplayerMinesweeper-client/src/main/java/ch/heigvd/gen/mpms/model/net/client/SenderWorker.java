@@ -40,7 +40,7 @@ public class SenderWorker {
     public Socket connect(String addressServer, int port){
         try {
             clientSocket = new Socket(addressServer, port);
-            pw           = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+            pw           = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             connected    = true;
 
             return clientSocket;
@@ -210,7 +210,8 @@ public class SenderWorker {
      * @param command    : The command to send
      */
     private void print(String command){
-        pw.println(command + MinesweeperProtocol.CARRIAGE_RETURN);
+        pw.println(command);
+        pw.flush();
         LOG.log(Level.INFO, command);
     }
 }
