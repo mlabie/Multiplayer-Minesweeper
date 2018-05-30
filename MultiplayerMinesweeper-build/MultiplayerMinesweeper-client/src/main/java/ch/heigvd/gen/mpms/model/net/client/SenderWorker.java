@@ -1,8 +1,10 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
+import ch.heigvd.gen.mpms.controller.MainController;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -38,7 +40,7 @@ public class SenderWorker {
     public Socket connect(String addressServer, int port){
         try {
             clientSocket = new Socket(addressServer, port);
-            pw           = new PrintWriter(clientSocket.getOutputStream());
+            pw           = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
             connected    = true;
 
             return clientSocket;
@@ -64,7 +66,6 @@ public class SenderWorker {
 
         this.print(command);
 
-        this.cleanup();
         return 0;
     }
 
@@ -90,7 +91,8 @@ public class SenderWorker {
                 MinesweeperProtocol.DELIMITER + playerName;
 
         this.print(command);
-        LOG.log(Level.INFO, command);
+
+
 
         return 0;
     }
@@ -115,7 +117,48 @@ public class SenderWorker {
                 MinesweeperProtocol.DELIMITER + playerName;
 
         this.print(command);
-        LOG.log(Level.INFO, command);
+
+        return 0;
+    }
+
+
+    public int openLobby(){
+
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_OPEN_LOBBY;
+
+        this.print(command);
+        return 0;
+    }
+
+
+    public int closeLobby(){
+
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_CLOSE_LOBBY;
+
+        this.print(command);
+        return 0;
+    }
+
+
+    public int setPlayerAmount(int playerAmount){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_SET_PLAYER_AMOUNT + MinesweeperProtocol.DELIMITER + playerAmount;
+
+        this.print(command);
 
         return 0;
     }
@@ -131,16 +174,17 @@ public class SenderWorker {
                 clientSocket.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE, e.getMessage(), e);
         }
     }
 
     /**
      * @brief Function that sends an command to the server, using the CARRIAGE_RETURN character.
      *
-     * @param answer    : The command to send
+     * @param command    : The command to send
      */
-    private void print(String answer){
-        pw.println(answer + MinesweeperProtocol.CARRIAGE_RETURN);
+    private void print(String command){
+        pw.println(command + MinesweeperProtocol.CARRIAGE_RETURN);
+        LOG.log(Level.INFO, command);
     }
 }

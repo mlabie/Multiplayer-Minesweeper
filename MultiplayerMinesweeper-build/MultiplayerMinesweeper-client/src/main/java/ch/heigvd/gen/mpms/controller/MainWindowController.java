@@ -2,7 +2,6 @@ package ch.heigvd.gen.mpms.controller;
 
 
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
-import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
 import ch.heigvd.gen.mpms.view.MainWindowStyle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,10 +10,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 
-
+/**
+ * @brief Controller for the Login Window.
+ *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
+ */
 public class MainWindowController {
 
-    private MineSweeperClient mineSweeperClient;
+    /**
+     * @brief link with the MainController.
+     */
+    private MainController mainController;
 
     @FXML
     private TextField playerNameField;
@@ -38,21 +44,42 @@ public class MainWindowController {
     private Button createLobbyButton;
 
 
-    public void setMineSweeperClient(MineSweeperClient mineSweeperClient) {
-        this.mineSweeperClient = mineSweeperClient;
+    /**
+     * Sets the MainController.
+     *
+     * @param mainController    : The MainController.
+     */
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
+    /**
+     * @brief Initialize function.
+     */
     public void initialize() {
         infoLabel.setText(MainWindowStyle.INFO_DEFAULT);
     }
 
 
+    /**
+     * @brief Set the text of the Information Label of the Login window.
+     *
+     * @param info  : The text to set.
+     */
     public void setInfoLabel(String info) {
         infoLabel.setText(info);
     }
 
 
-
+    /**
+     * @brief Function called when the "Join Lobby" button is pressed.
+     *        Creates a MineSweeper Client, and tries to connect to the
+     *        server. If it successes, sends the "JOIN LOBBY" commands
+     *        to the server.
+     *        The fields must be completed before calling this function.
+     *
+     * @param actionEvent
+     */
     public void joinLobbyButtonClicked(ActionEvent actionEvent) {
 
         String playerName;
@@ -61,8 +88,6 @@ public class MainWindowController {
         String serverPort;
         int    port;
 
-        MineSweeperClient  mineSweeperClient;
-
 
         playerName    = playerNameField.getText();
         lobbyName     = lobbyNameField.getText();
@@ -87,21 +112,26 @@ public class MainWindowController {
             return;
         }
 
-
-        mineSweeperClient = new MineSweeperClient();
-
         // try to connect
-        if(!mineSweeperClient.connect(serverAddress,port)){
+        if(!mainController.getMineSweeperClient().connect(serverAddress,port)){
             infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
             return;
         }
 
-        //mineSweeperClient.setMainWindowController(this);
-
-        mineSweeperClient.joinLobby(lobbyName, playerName);
+        mainController.getMineSweeperClient().joinLobby(lobbyName, playerName);
 
     }
 
+
+    /**
+     * @brief Function called when the "Create Lobby" button is pressed.
+     *        Creates a MineSweeper Client, and tries to connect to the
+     *        server. If it successes, sends the "CREATE LOBBY" commands
+     *        to the server.
+     *        The fields must be completed before calling this function.
+     *
+     * @param actionEvent
+     */
     public void createLobbyButtonClicked(ActionEvent actionEvent) {
 
         String playerName;
@@ -110,8 +140,6 @@ public class MainWindowController {
         String serverPort;
         int    port;
 
-        //MineSweeperClient  mineSweeperClient;
-
 
         playerName    = playerNameField.getText();
         lobbyName     = lobbyNameField.getText();
@@ -138,13 +166,15 @@ public class MainWindowController {
 
 
         // try to connect
-        if(!mineSweeperClient.connect(serverAddress,port)){
+        if(!mainController.getMineSweeperClient().connect(serverAddress,port)){
             infoLabel.setText(MainWindowStyle.INFO_IMPOSSIBLE_CONNECTION);
             return;
         }
 
-        mineSweeperClient.createLobby(lobbyName, playerName);
+        mainController.getMineSweeperClient().createLobby(lobbyName, playerName);
     }
+
+
 
     /**
      * @brief Check if all the fields of the mainWindow are filld.

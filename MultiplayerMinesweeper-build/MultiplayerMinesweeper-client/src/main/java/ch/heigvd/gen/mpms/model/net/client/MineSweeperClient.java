@@ -6,35 +6,31 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+/**
+ * @brief
+ *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
+ */
 public class MineSweeperClient {
 
     final static Logger LOG = Logger.getLogger(ReceptionistWorker.class.getName());
 
+
     private SenderWorker       senderWorker;
     private ReceptionistWorker receptionistWorker;
-    Thread  receptionnistThread;
 
-    private MainController       mainController;
-    //private MainWindowController mainWindowController;
+    private MainController     mainController;
 
     /**
-     *
+     *  @brief Constructor of the class.
      */
     public MineSweeperClient(){
         this.senderWorker            = null;
         this.receptionistWorker      = null;
         this.mainController          = null;
-        //this.mainWindowController    = null;
     }
 
-
-    /*public void setMainWindowController(MainWindowController mainWindowController) {
-        this.mainWindowController = mainWindowController;
-    }
-
-    public MainWindowController getMainWindowController() {
-        return mainWindowController;
-    }*/
 
 
     public void setMainController(MainController mainController) {
@@ -121,26 +117,53 @@ public class MineSweeperClient {
         this.senderWorker       = senderWorker;
         this.receptionistWorker = receptionistWorker;
 
-        receptionnistThread = new Thread(receptionistWorker);
 
         // start the receptionnist thread.
-        receptionnistThread.start();
+        this.receptionistWorker.start();
 
         // Wait that the thread sends welcome message.
-        /*try {
-            receptionistWorker.wait();
-        }catch (InterruptedException e){
-            LOG.log(Level.SEVERE, e.getMessage(), e);
-            return false;
-        }*/
-
+        synchronized (this.receptionistWorker){
+            try {
+                LOG.log(Level.INFO, "Waiting for server welcome...");
+                this.receptionistWorker.wait(); // ici !
+            }catch (InterruptedException e){
+                LOG.log(Level.SEVERE, e.getMessage(), e);
+                return false;
+            }
+        }
 
         return  true;
     }
 
     //@Override
     public void disconnect() {
-        senderWorker.disconnect();
+
+        // Check that the senderWorker is not null
+        if(senderWorker == null)
+            return;
+
+        // Send the disconnect command
+        if(senderWorker.disconnect() == -1)
+            return;
+
+        // Waiting for the server response
+        synchronized (receptionistWorker){
+            try {
+                receptionistWorker.wait();
+            }catch (InterruptedException e){
+                LOG.log(Level.SEVERE, e.getMessage(), e);
+            }
+        }
+
+        // interruption of the receptionnist worker.
+        receptionistWorker.interrupt();
+
+        // cleaning up resources.
+        senderWorker.cleanup();
+
+        senderWorker       = null;
+        receptionistWorker = null;
+
     }
 
 
@@ -160,9 +183,15 @@ public class MineSweeperClient {
         senderWorker.createLobby(lobbyName, playerName);
     }
 
-
-    public void cleanup(){
-        senderWorker.cleanup();
+    public void openLobby(){
+        senderWorker.openLobby();
     }
 
+    public void closeLobby(){
+        senderWorker.closeLobby();
+    }
+
+    public void setPlayerAmount(int playerAmount){
+        senderWorker.setPlayerAmount(playerAmount);
+    }
 }

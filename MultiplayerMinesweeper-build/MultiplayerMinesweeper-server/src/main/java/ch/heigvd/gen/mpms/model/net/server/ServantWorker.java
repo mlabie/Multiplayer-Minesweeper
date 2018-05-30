@@ -22,7 +22,6 @@ public class ServantWorker implements Runnable{
 
     final static Logger LOG = Logger.getLogger(ServantWorker.class.getName());
 
-    private static final String WELCOME = "Welcome to the Multiplayer MineSweeper game !";
 
     private Socket clientSocket;
 
@@ -87,7 +86,7 @@ public class ServantWorker implements Runnable{
 
 
         shouldRun = true;
-        answer    = MinesweeperProtocol.STATUS_220 + " " + WELCOME;
+        answer    = MinesweeperProtocol.STATUS_220 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.WELCOME;
 
         LOG.info(answer);
         print(answer);
@@ -281,7 +280,7 @@ public class ServantWorker implements Runnable{
 
             // - - - - - - - - - - - - - - -          DISCONNECT          - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_DISCONNECT:
-                answer = "Thank's for playing ! see you soon.";
+                answer = MinesweeperProtocol.STATUS_220 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.GOODBYE;
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 return -1;
@@ -370,7 +369,7 @@ public class ServantWorker implements Runnable{
                         lobby  = null;
                         break;
                     } else {
-                        answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                        answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED;
                     }
                 }
 

@@ -1,5 +1,6 @@
 package ch.heigvd.gen.mpms;
 
+import ch.heigvd.gen.mpms.controller.LobbyWindowController;
 import ch.heigvd.gen.mpms.controller.MainController;
 import ch.heigvd.gen.mpms.controller.MainWindowController;
 import ch.heigvd.gen.mpms.controller.WindowController;
@@ -8,11 +9,14 @@ import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.util.logging.Level;
 
 public class Launcher extends Application{
 
@@ -20,38 +24,52 @@ public class Launcher extends Application{
     private MineSweeperClient   mineSweeperClient;
     private MainController      mainController;
 
+
     @Override
     public void start(Stage primaryStage) throws Exception{
 
 
+        FXMLLoader loader;
+        Parent     parent;
+
+
         // Initialisation.
-        scene             = new Scene(new VBox());
         mineSweeperClient = new MineSweeperClient();
-        mainController    = new MainController(mineSweeperClient, scene);
+        mainController    = new MainController(mineSweeperClient, primaryStage);
 
 
-        // Ajout des différents fenêtre.
-        mainController.getWindowController().addWindow(WindowController.MAIN_WINDOW,
-                (Pane)FXMLLoader.load(getClass().getResource( "/window/mainWindow.fxml")));
-        mainController.getWindowController().addWindow(WindowController.LOBBY_WINDOW,
-                (Pane)FXMLLoader.load(getClass().getResource( "/window/lobbyWindow.fxml")));
+        // Loading Main Window
+
+        loader  = new FXMLLoader(getClass().getResource( "/window/mainWindow.fxml"));
+        parent  = loader.load();
 
 
+        mainController.setMainWindowController((MainWindowController)loader.getController());
+        mainController.getWindowController().addWindow(WindowController.MAIN_WINDOW, parent);
+
+        mainController.getMainWindowController().setMainController(this.mainController);
+
+
+        // Loading Lobby Window
+        loader  = new FXMLLoader(getClass().getResource( "/window/lobbyWindow.fxml"));
+        parent  = loader.load();
+
+        mainController.setLobbyWindowController((LobbyWindowController)loader.getController());
+        mainController.getWindowController().addWindow(WindowController.LOBBY_WINDOW, parent);
+
+        mainController.getLobbyWindowController().setMainController(this.mainController);
+
+
+        // Setting first Window as Main Window.
         mainController.getWindowController().activate(WindowController.MAIN_WINDOW);
 
-        // Set window title
-        primaryStage.setTitle("Multiplayer Minesweeper");
-        primaryStage.setResizable(false);
 
-        // Show
-        primaryStage.setScene(scene);
-        primaryStage.show();
 
 
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event){
-
+                mineSweeperClient.disconnect();
             }
         });
 
@@ -59,47 +77,5 @@ public class Launcher extends Application{
 
     public static void main(String args[]){
         launch(args);
-
-        // TEST
-
-        /*String answer1 = MinesweeperProtocol.STATUS_450 +  MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_ACTION_DENIED;
-        String answer2 = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_SIZE_IS + MinesweeperProtocol.REPLY_PARAM_DELIMITER +MinesweeperProtocol.REPLY_PARAM_DELIMITER +  "20X20";
-
-
-        String status;
-        String message;
-        String parameters;
-
-        String[] splitedAnswer;
-
-        status  = answer1.substring(0, answer1.indexOf(MinesweeperProtocol.DELIMITER));
-        message = answer1.replaceFirst(status + MinesweeperProtocol.DELIMITER, "");
-
-        splitedAnswer = message.split(MinesweeperProtocol.REPLY_PARAM_DELIMITER);
-
-        System.out.println(splitedAnswer.length);
-        System.out.println(status);
-
-        for(String s : splitedAnswer)
-            System.out.println(s);
-
-        System.out.println();
-
-
-        status  = answer2.substring(0, answer2.indexOf(MinesweeperProtocol.DELIMITER));
-        message = answer2.replaceFirst(status + MinesweeperProtocol.DELIMITER, "");
-
-        splitedAnswer = message.split(MinesweeperProtocol.REPLY_PARAM_DELIMITER);
-
-        System.out.println(splitedAnswer.length);
-        System.out.println(status);
-
-
-        for(String s : splitedAnswer)
-            System.out.println(s);
-
-        System.out.println();*/
-
-
     }
 }

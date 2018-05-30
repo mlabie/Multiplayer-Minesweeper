@@ -1,6 +1,8 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
+import ch.heigvd.gen.mpms.controller.WindowController;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
+import javafx.application.Platform;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.util.logging.Logger;
  *        the answers from the server, and will manage them. It doesn't sends any request to the server.
  *        It's a threaded instance. Run until the connexion is stopped.
  */
-public class ReceptionistWorker implements Runnable {
+public class ReceptionistWorker extends Thread {
 
     final static Logger LOG = Logger.getLogger(ReceptionistWorker.class.getName());
 
@@ -65,17 +67,20 @@ public class ReceptionistWorker implements Runnable {
             while (clientSocket.isConnected() && run == 0) {
 
 
-                System.out.println(clientSocket.isConnected());
                 answer = br.readLine();
-                LOG.log(Level.INFO, answer);
+                synchronized (this){
 
-                System.out.println("pouet_4");
-
-                // send the answer to the answer manager.
-                run = answerManager(answer);
-
+                    LOG.log(Level.INFO, answer);
+                    // send the answer to the answer manager.
+                    run = answerManager(answer);
+                }
             }
 
+            if (br != null)
+                br.close();
+
+            if (clientSocket != null)
+                clientSocket.close();
 
         }catch (IOException e){
             LOG.log(Level.SEVERE, e.getMessage(), e);
@@ -89,6 +94,7 @@ public class ReceptionistWorker implements Runnable {
      *
      *         Function                      Status
      *
+     *  - connexionManager            :       220
      *  - confirmationManager         :       250
      *  - informationManager          :       350
      *  - denialManager               :       450
@@ -136,30 +142,54 @@ public class ReceptionistWorker implements Runnable {
         switch (status){
 
             case MinesweeperProtocol.STATUS_220 :
-                break;
+                return connexionManager(message, parameters);
             case MinesweeperProtocol.STATUS_250 :
-                confirmationManager(message, parameters);
-                break;
+                return confirmationManager(message, parameters);
             case MinesweeperProtocol.STATUS_350 :
-                informationManager(message, parameters);
-                break;
+                return informationManager(message, parameters);
             case MinesweeperProtocol.STATUS_450 :
-                denialManager(message, parameters);
-                break;
+                return denialManager(message, parameters);
             case MinesweeperProtocol.STATUS_550 :
-                unauthorizedCommandManager(message, parameters);
-                break;
+                return unauthorizedCommandManager(message, parameters);
             case MinesweeperProtocol.STATUS_650 :
-                rejectionManager(message, parameters);
-                break;
+                return rejectionManager(message, parameters);
             case MinesweeperProtocol.STATUS_750 :
-                unknownCommandManager(message, parameters);
-                break;
-
+                return unknownCommandManager(message, parameters);
                 default:
                     LOG.log(Level.INFO, status + " : " + "Unhandled command status.");
                     break;
         }
+        return 0;
+    }
+
+
+    /**
+     * Manage the message of the server if it's a connexion message, which means its status
+     * is 220.
+     *
+     * @param message       : The message of the answer
+     * @param parameters    : The parameters of the message. It's an empty String if there were none.
+     *
+     * @return
+     */
+    private int connexionManager(String message, String parameters){
+
+        switch (message){
+
+            case MinesweeperProtocol.WELCOME :
+                notify();
+                break;
+
+
+            case  MinesweeperProtocol.GOODBYE:
+                notify();
+                return -1;
+
+            default:
+                LOG.log(Level.INFO, "Unhandled confirmation message.");
+                break;
+        }
+
         return 0;
     }
 
@@ -183,8 +213,19 @@ public class ReceptionistWorker implements Runnable {
 
 
             case  MinesweeperProtocol.REPLY_LOBBY_CREATED:
-                mineSweeperClient.getMainController().getMainWindowController().setInfoLabel("pouet !");
-                //LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Change the UI Window to lobby window.
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.LOBBY_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().setAdminLobby();
+                });
+                break;
+
+            case  MinesweeperProtocol.REPLY_LOBBY_JOINED:
+                // Change the UI Window to lobby window.
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.LOBBY_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().setPlayerLobby();
+                });
                 break;
 
 
@@ -202,12 +243,16 @@ public class ReceptionistWorker implements Runnable {
         switch (message){
 
             case  MinesweeperProtocol.REPLY_LOBBY_OPENED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().setOpenedLobby();
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_LOBBY_CLOSED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().setClosedLobby();
+                });
                 break;
 
 
@@ -232,12 +277,26 @@ public class ReceptionistWorker implements Runnable {
 
 
             case  MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Check that the amount of parameters is correct.
+                /*if(parameters.length() != MinesweeperProtocol.NBR_PARAM_SET_PLAYER_AMOUNT)
+                    break;*/
+
+
+                Platform.runLater(()->{
+                    try {
+                        mineSweeperClient.getMainController().getLobbyWindowController().setPlayerAmount(Integer.parseInt(parameters));
+                    }catch (NumberFormatException e){
+
+                    }
+                });
+
                 break;
 
 
             case  MinesweeperProtocol.REPLY_SCORE_MODE_IS:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().setScoreMode(parameters);
+                });
                 break;
 
 
@@ -294,16 +353,25 @@ public class ReceptionistWorker implements Runnable {
 
 
             case MinesweeperProtocol.REPLY_ALREADY_IN_A_LOBBY :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
             case MinesweeperProtocol.REPLY_NO_LOBBY_CREATED :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
             case MinesweeperProtocol.REPLY_NO_LOBBY_JOINED :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
@@ -320,26 +388,51 @@ public class ReceptionistWorker implements Runnable {
         switch (message){
 
             case MinesweeperProtocol.REPLY_LOBBY_NAME_NOT_AVAIABLE :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Set rejection message
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_LOBBY_NAME_NOT_AVAIABLE);
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
             case MinesweeperProtocol.REPLY_LOBBY_FULL :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Set rejection message
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_LOBBY_FULL);
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
             case MinesweeperProtocol.REPLY_LOBBY_CLOSED :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Set rejection message
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_LOBBY_CLOSED);
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
             case MinesweeperProtocol.REPLY_LOBBY_NOT_FOUND :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Set rejection message
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_LOBBY_NOT_FOUND);
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
             case MinesweeperProtocol.REPLY_PLAYER_NAME_NOT_AVAIBALE :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                // Set rejection message
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_PLAYER_NAME_NOT_AVAIBALE);
+                    // Disconnect.
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
             case MinesweeperProtocol.REPLY_PLAYER_NOT_FOUND :

@@ -9,12 +9,11 @@ package ch.heigvd.gen.mpms.model.net.Protocol;
  */
 public class MinesweeperProtocol {
 
-    public final static String VERSION              = "1.0";
-    public final static int DEFAULT_PORT            = 1001;
+    public final static String VERSION   = "1.0";
+    public final static int DEFAULT_PORT = 1001;
 
     public final static int MIN_PORT_RANGE          = 0;
     public final static int MAX_PORT_RANGE          = 65535;
-
 
     public final static String EOL                     = "\r\n";
     public final static char   CARRIAGE_RETURN         = '\r';
@@ -98,9 +97,14 @@ public class MinesweeperProtocol {
 
 
     // - - - - - - - - - - -          Answer         - - - - - - - - - - - //
+
+    public static final String WELCOME = "Welcome to the Multiplayer MineSweeper game !";
+    public static final String GOODBYE = "Thank's for playing ! see you soon.";
+
     public final static String REPLY_OK                          = "OK";
     public final static String REPLY_ACTION_DENIED               = "ACTION DENIED";
     public final static String REPLY_LOBBY_CREATED               = "LOBBY CREATED";
+    public final static String REPLY_LOBBY_JOINED                = "LOBBY JOINED";
     public final static String REPLY_LOBBY_NAME_NOT_AVAIABLE     = "LOBBY NAME NOT AVAILABLE";
     public final static String REPLY_NO_LOBBY_CREATED            = "NO LOBBY CREATED";
     public final static String REPLY_LOBBY_OPENED                = "LOBBY OPENED";
