@@ -193,4 +193,8 @@ public class MineSweeperClient {
     public void setPlayerAmount(int playerAmount){
         senderWorker.setPlayerAmount(playerAmount);
     }
+
+    public void setScoreMode(String scoreMode){
+        senderWorker.setScoreMode(scoreMode);
+    }
 }

@@ -187,6 +187,26 @@ public class SenderWorker {
 
 
     /**
+     * @brief Sends a command to server to set the actual Score Mode
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int setScoreMode(String scoreMode){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_SET_SCORE_MODE + MinesweeperProtocol.DELIMITER + scoreMode;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+    /**
      * @brief cleans up the ressources of the Sender.
      */
     public void cleanup(){
