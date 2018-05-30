@@ -14,6 +14,9 @@ public class Player {
     private String        playerName;
     private int           score;
 
+    public Player(String playerName){
+    	this.playerName = playerName;
+	}
     public Player(ServantWorker client){
         this(client, "");
     }
@@ -36,9 +39,10 @@ public class Player {
         return score;
     }
 
-    public void setScore(int score){
-        this.score = score;
+    public void addScore(int score){
+        this.score += score;
     }
+
 
     public ServantWorker getClient(){
         return client;

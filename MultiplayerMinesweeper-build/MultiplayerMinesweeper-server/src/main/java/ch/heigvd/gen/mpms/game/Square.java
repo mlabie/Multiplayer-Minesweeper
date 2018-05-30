@@ -2,12 +2,24 @@ package ch.heigvd.gen.mpms.game;
 
 public class Square {
 	private String playerName;
-	private int value;
+	private int value, x, y;
 	private boolean swept;
 	private boolean bonus;
 	private boolean malus;
 
-	public Square(){}
+	public Square(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 
 	public String getPlayerName() {
 		return playerName;
