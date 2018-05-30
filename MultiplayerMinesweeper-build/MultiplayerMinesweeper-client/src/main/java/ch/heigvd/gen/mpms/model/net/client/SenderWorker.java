@@ -40,7 +40,7 @@ public class SenderWorker {
     public Socket connect(String addressServer, int port){
         try {
             clientSocket = new Socket(addressServer, port);
-            pw           = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()), true);
+            pw           = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
             connected    = true;
 
             return clientSocket;
@@ -187,6 +187,26 @@ public class SenderWorker {
 
 
     /**
+     * @brief Sends a command to server to set the actual Score Mode
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int setScoreMode(String scoreMode){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_SET_SCORE_MODE + MinesweeperProtocol.DELIMITER + scoreMode;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+    /**
      * @brief cleans up the ressources of the Sender.
      */
     public void cleanup(){
@@ -210,7 +230,8 @@ public class SenderWorker {
      * @param command    : The command to send
      */
     private void print(String command){
-        pw.println(command + MinesweeperProtocol.CARRIAGE_RETURN);
+        pw.println(command);
+        pw.flush();
         LOG.log(Level.INFO, command);
     }
 }
