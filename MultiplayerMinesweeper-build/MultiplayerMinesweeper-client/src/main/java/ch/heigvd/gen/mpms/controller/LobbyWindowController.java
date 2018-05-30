@@ -3,11 +3,15 @@ package ch.heigvd.gen.mpms.controller;
 import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 
 import ch.heigvd.gen.mpms.view.LobbyWindowStyle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+
+import java.util.List;
 
 
 /**
@@ -97,15 +101,19 @@ public class LobbyWindowController {
         scoreModeSelect.setItems(scoreModeChoices);
 
 
-        /*final List options = choices.getItems();
 
-        playerAmountSelect.
-        choices.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener() {
-            @Override public void changed(ObservableValue ov, Number oldSelected, Number newSelected) {
-                System.out.println("Old Selected Option: " + options.get(oldSelected.intValue()));
-                System.out.println("New Selected Option: " +options.get(newSelected.intValue()));
-            }
-        });*/
+        playerAmountSelect.getSelectionModel().selectedIndexProperty().addListener(
+                (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
+                        this.playerAmountSelected(playerAmountChoices.get(newSelected.intValue()))
+                        //System.out.println(playerAmountChoices.get(newSelected.intValue()))
+        );
+
+        scoreModeSelect.getSelectionModel().selectedIndexProperty().addListener(
+                (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
+                        this.scoreModeSelected(scoreModeChoices.get(newSelected.intValue()))
+                        //System.out.println(scoreModeChoices.get(newSelected.intValue()))
+        );
+
     }
 
 
@@ -192,7 +200,11 @@ public class LobbyWindowController {
         if(amount < Configuration.MIN_SLOT || amount > Configuration.MAX_SLOT)
             return;
 
+
         playerAmountSelect.setValue(String.valueOf(amount));
+
+
+        //setInfoLabel("player amount : " + amount);
 
     }
 
@@ -233,16 +245,28 @@ public class LobbyWindowController {
      * @brief Function called when a choice in the "playerAmountSelect" choice box is selected. .
      *        Sends a command to the server to change the player Amount.
      *
-     * @param actionEvent
+     * @param amount
      */
-    public void playerAmountSelected(ActionEvent actionEvent) {
+    private void playerAmountSelected(String amount) {
         synchronized (lobbyWindowLock){
             try {
-                //mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(playerAmountSelect.getValue()));
+                mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(amount));
             }catch (NumberFormatException e){
                 return;
             }
 
+        }
+    }
+
+    /**
+     * @brief Function called when a choice in the "scoreModeSelect" choice box is selected. .
+     *        Sends a command to the server to change the Score Mode.
+     *
+     * @param scoreMode
+     */
+    private void scoreModeSelected(String scoreMode) {
+        synchronized (lobbyWindowLock){
+            mainController.getMineSweeperClient().setScoreMode(scoreMode);
         }
     }
 
