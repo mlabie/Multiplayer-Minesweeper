@@ -244,6 +244,16 @@ public class ServantWorker implements Runnable{
                         player = null;
                         lobby  = null;
                     }else {
+                        // We send the current lobby status to the joining player
+
+                        // Send if the lobby is opened or closed
+                        if(lobby.isOpened()){
+                            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED);
+                        }else {
+                            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_CLOSED);
+                        }
+
+                        // Send the actual configuration of the lobby.
                         lobby.sendActualConfig(player);
                         answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_CREATED;
                     }

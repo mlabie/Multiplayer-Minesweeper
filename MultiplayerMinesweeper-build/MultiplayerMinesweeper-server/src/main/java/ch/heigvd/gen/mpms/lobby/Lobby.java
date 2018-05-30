@@ -148,8 +148,17 @@ public class Lobby {
 
             // We send the current lobby status to the joining player
 
+            // Send if the lobby is opened or closed
+            if(isOpened){
+                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED);
+            }else {
+                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_CLOSED);
+            }
+
+            // send the actual configuration
             sendActualConfig(player);
 
+            // send the actual players
             player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
                     MinesweeperProtocol.REPLY_PARAM_DELIMITER + admin.getPlayerName());
 
