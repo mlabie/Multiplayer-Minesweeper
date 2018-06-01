@@ -58,6 +58,30 @@ public class Lobby {
         return name;
     }
 
+
+    /**
+     * Get a list of the players of the game, including the admin.
+     *
+     * @return the list of player
+     */
+    public ArrayList<Player> getPlayers(){
+        ArrayList<Player> retPlayers = new ArrayList<>();
+        retPlayers.add(admin);
+        retPlayers.addAll(players);
+
+        return retPlayers;
+    }
+
+    /**
+     * Get the lobby configuration
+     *
+     * @return the lobby configuration
+     */
+    public Configuration getConfig() {
+        return config;
+    }
+
+
     /**
      * Get the locker of the lobby
      * @return

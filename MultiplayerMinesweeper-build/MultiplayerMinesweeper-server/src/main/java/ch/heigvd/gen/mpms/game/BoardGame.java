@@ -16,7 +16,6 @@ public class BoardGame {
 	private final double ratioBonus = 0.005;
 	private final double ratioMalus = 0.007;
 
-
 	public BoardGame(Configuration configuration){
 		this.config = configuration;
 		bonusMalusEnable = config.isBonus();
