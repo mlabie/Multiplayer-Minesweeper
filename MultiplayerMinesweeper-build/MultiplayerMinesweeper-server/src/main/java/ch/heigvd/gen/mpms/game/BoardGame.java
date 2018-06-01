@@ -13,8 +13,8 @@ public class BoardGame {
 	private Configuration config;
 	private final int idMine = 10;
 	private int valueOfIncrScore = 10;
-	private final double ratioBonus = 0.01;
-	private final double ratioMalus = 0.01;
+	private final double ratioBonus = 0.005;
+	private final double ratioMalus = 0.007;
 
 
 	public BoardGame(Configuration configuration){
@@ -121,7 +121,8 @@ public class BoardGame {
 						//exclut le cas (0,0)
 						if (dirX != 0 || dirY != 0) {
 							if (I + dirX >= 0 && I + dirX < config.getHeight() && J + dirY >= 0 && J + dirY <
-									config.getWidth() && !board[I + dirX][J + dirY].isSwept()) {
+									config.getWidth() && !board[I + dirX][J + dirY].isSwept() &&
+									!(board[I + dirX][J + dirY].isMalus() || board[I + dirX][J + dirY].isBonus())) {
 								sweep(I + dirX, J + dirY, player, tabOfSquare);
 							}
 						}
