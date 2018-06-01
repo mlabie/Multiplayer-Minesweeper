@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Lobby {
     private String name;
 
-    private Player            admin;
+    private Player            player;
     private ArrayList<Player> players;
 
     private boolean isOpened;

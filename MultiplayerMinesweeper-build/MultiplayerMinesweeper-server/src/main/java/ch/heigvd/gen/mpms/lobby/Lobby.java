@@ -159,13 +159,7 @@ public class Lobby {
             sendActualConfig(player);
 
             // send the actual players
-            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
-                    MinesweeperProtocol.REPLY_PARAM_DELIMITER + admin.getPlayerName());
-
-            for(Player p : players){
-                player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
-                        MinesweeperProtocol.REPLY_PARAM_DELIMITER  + p.getPlayerName());
-            }
+            sendActualPlayers(player);
 
 
 
@@ -481,6 +475,26 @@ public class Lobby {
 
 
     /**
+     * Send the actual players present in the lobby.
+     *
+     * @param player the player to whom the actual players will be sent.
+     */
+    public void sendActualPlayers(Player player){
+
+        if(player == null)
+            return;
+
+        // send the actual players
+        player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
+                MinesweeperProtocol.REPLY_PARAM_DELIMITER + admin.getPlayerName());
+
+        for(Player p : players){
+            player.getClient().print(MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_LOBBY_JOINED_BY +
+                    MinesweeperProtocol.REPLY_PARAM_DELIMITER  + p.getPlayerName());
+        }
+    }
+
+    /**
      * Send the actual configuration to a player.
      *
      * @param player the player to whom the actual configuration will be sent.
@@ -514,7 +528,7 @@ public class Lobby {
 
 
 
-    /***************************               Méthodes Privées               ***************************/
+    /***************************               Private Functions               ***************************/
 
 
     /**
