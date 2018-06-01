@@ -39,7 +39,6 @@ public class Launcher extends Application{
 
 
         // Loading Main Window
-
         loader  = new FXMLLoader(getClass().getResource( "/window/mainWindow.fxml"));
         parent  = loader.load();
 
