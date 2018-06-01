@@ -581,10 +581,10 @@ public class ServantWorker implements Runnable{
                     answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_CREATED;
                 } else if(mineSweeperGame != null){
                     // Check that the player is in a game
-                    answer = MinesweeperProtocol.STATUS_550 + " " ;
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_ALREADY_IN_A_GAME;
                 }else if(lobby.getPlayers().size() < Configuration.MIN_SLOT || lobby.getPlayers().size() > Configuration.MAX_SLOT) {
                     // Check that the number of player in the slot is allowed
-                    answer = MinesweeperProtocol.STATUS_550 + " " ;
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_PLAYER;
                 }else if(lobby.isOpened()){
                     // Check that the lobby is closed
                     answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED;
