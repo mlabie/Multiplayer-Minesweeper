@@ -1,9 +1,6 @@
 package ch.heigvd.gen.mpms;
 
-import ch.heigvd.gen.mpms.controller.LobbyWindowController;
-import ch.heigvd.gen.mpms.controller.MainController;
-import ch.heigvd.gen.mpms.controller.MainWindowController;
-import ch.heigvd.gen.mpms.controller.WindowController;
+import ch.heigvd.gen.mpms.controller.*;
 
 import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
 import javafx.application.Application;
@@ -57,6 +54,15 @@ public class Launcher extends Application{
         mainController.getWindowController().addWindow(WindowController.LOBBY_WINDOW, parent);
 
         mainController.getLobbyWindowController().setMainController(this.mainController);
+
+        // Loading MineSweeper Window
+        loader  = new FXMLLoader(getClass().getResource( "/window/mineSweeperWindow.fxml"));
+        parent  = loader.load();
+
+        mainController.setMineSweeperWindowController((MineSweeperWindowController) loader.getController());
+        mainController.getWindowController().addWindow(WindowController.MINESWEEPER_WINDOW, parent);
+
+        mainController.getMineSweeperWindowController().setMainController(this.mainController);
 
 
         // Setting first Window as Main Window.

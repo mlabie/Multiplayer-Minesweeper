@@ -12,10 +12,11 @@ import javafx.stage.Stage;
  */
 public class MainController {
 
-    private MineSweeperClient           mineSweeperClient;
-    private WindowController            windowController;
-    private MainWindowController        mainWindowController;
-    private LobbyWindowController       lobbyWindowController;
+    private MineSweeperClient               mineSweeperClient;
+    private WindowController                windowController;
+    private MainWindowController            mainWindowController;
+    private LobbyWindowController           lobbyWindowController;
+    private MineSweeperWindowController     mineSweeperWindowController;
 
 
 
@@ -43,11 +44,19 @@ public class MainController {
         this.lobbyWindowController = lobbyWindowController;
     }
 
+    public void setMineSweeperWindowController(MineSweeperWindowController mineSweeperWindowController) {
+        this.mineSweeperWindowController = mineSweeperWindowController;
+    }
+
     public MainWindowController getMainWindowController() {
         return mainWindowController;
     }
 
     public LobbyWindowController getLobbyWindowController() {
         return lobbyWindowController;
+    }
+
+    public MineSweeperWindowController getMineSweeperWindowController() {
+        return mineSweeperWindowController;
     }
 }

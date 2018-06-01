@@ -21,8 +21,9 @@ import java.util.HashMap;
  */
 public class WindowController {
 
-    public final static String MAIN_WINDOW        = "mainWindow";
-    public final static String LOBBY_WINDOW       = "lobbyWindow";
+    public final static String MAIN_WINDOW           = "mainWindow";
+    public final static String LOBBY_WINDOW          = "lobbyWindow";
+    public final static String MINESWEEPER_WINDOW    = "mineSweeperWindow";
 
     private HashMap<String, Scene> windowMap;
     private Stage  primarystage;

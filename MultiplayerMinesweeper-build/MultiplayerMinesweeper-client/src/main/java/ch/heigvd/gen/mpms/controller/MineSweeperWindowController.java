@@ -1,6 +1,6 @@
 package ch.heigvd.gen.mpms.controller;
 
-import ch.heigvd.gen.mpms.Square;
+//import ch.heigvd.gen.mpms.Square;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -99,9 +99,9 @@ public class MineSweeperWindowController implements Initializable {
 
     }
 
-    public void refreshGame(Vector<Square> tabOfSquareSwept) {
+    /*public void refreshGame(Vector<Square> tabOfSquareSwept) {
         for(int i = 0; i < tabOfSquareSwept.size(); ++i) {
 
         }
-    }
+    }*/
 }
