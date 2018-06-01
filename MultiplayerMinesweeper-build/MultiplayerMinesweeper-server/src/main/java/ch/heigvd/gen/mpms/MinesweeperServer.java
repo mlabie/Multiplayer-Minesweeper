@@ -39,15 +39,19 @@ public class MinesweeperServer {
 		Configuration configuration = new Configuration("hello");
 		configuration.setScore(Configuration.ScoreMode.STANDARD);
 		configuration.setBonus(true);
-		configuration.setMineProportion(15);
-		configuration.setHeight(20);
-		configuration.setWidth(30);
+		configuration.setMineProportion(10);
+		configuration.setHeight(16);
+		configuration.setWidth(16);
 		BoardGame b = new BoardGame(configuration);
 		System.out.println("Board state 1: \n" + b);
 		Vector<Square> tab = new Vector<>();
-		b.sweep(5, 5, new Player("hello"), tab);
-		System.out.println("Board state 2: \n" + b);
-		b.sweep(10,16, new Player("hello"), tab);
+		b.sweep(10, 5, new Player("hello"), tab);
+		System.out.print("Square swept: " );
+		for(Square s : tab){
+			System.out.print(s.getValue() + ", ");
+		}
+		System.out.println();
+		b.sweep(10,15, new Player("hello"), tab);
 		System.out.println("Board state 2: \n" + b);
 
     }
