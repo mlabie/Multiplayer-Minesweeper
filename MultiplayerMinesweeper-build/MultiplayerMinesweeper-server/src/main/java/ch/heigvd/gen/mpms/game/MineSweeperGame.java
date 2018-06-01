@@ -2,8 +2,16 @@ package ch.heigvd.gen.mpms.game;
 
 import ch.heigvd.gen.mpms.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.GameComponent.Player;
+import ch.heigvd.gen.mpms.JsonObjectMapper;
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.model.net.server.ServantWorker;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @brief This class will implement the Minesweeper Game, with the set of function the client will need
@@ -13,6 +21,8 @@ import java.util.ArrayList;
  * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
  */
 public class MineSweeperGame {
+
+    final static Logger LOG = Logger.getLogger(ServantWorker.class.getName());
 
     private ArrayList<Player> players;
     private BoardGame         boardGame;
@@ -31,6 +41,8 @@ public class MineSweeperGame {
         this.boardGame   = new BoardGame(configuration);
         this.playerAlive = players.size();
         this.playerDead  = 0;
+        LOG.log(Level.INFO, "\n" + boardGame.toString());
+
     }
 
 
@@ -67,6 +79,58 @@ public class MineSweeperGame {
      */
     public BoardGame getBoardGame() {
         return boardGame;
+    }
+
+
+    /**
+     * @brief Sweep a square in the mine field. Send an answer to the players to
+     *        notify them if the player is dead, or to send them all the squares
+     *        that have been swept by the player.
+     *
+     * @param x         : The x coordinate of the square
+     * @param y         : The y coordinate of the square
+     * @param player    : The player that wants to sweep the mine.
+     *
+     * @return the Status of the command
+     */
+    public int sweep(int x, int y, Player player){
+        Vector<Square> sweptSquare;
+        boolean        isAlive;
+        String         answer;
+
+        // Check that the square is in the field.
+        if(x < 0 || x >= boardGame.getConfig().getWidth() || y < 0 || y >= boardGame.getConfig().getHeight()){
+            answer = MinesweeperProtocol.STATUS_650 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_SQUARE_NOT_FOUND;
+            player.getClient().print(answer);
+            return MinesweeperProtocol.STATUS_650_I;
+        }
+
+        sweptSquare = new Vector<Square>();
+        isAlive     = boardGame.sweep(x,y,player,sweptSquare);
+
+
+        if(!isAlive){
+            answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_PLAYER_DIED +
+                     MinesweeperProtocol.REPLY_PARAM_DELIMITER + player.getPlayerName();
+            player.kill();
+        }else if(sweptSquare.isEmpty()){
+            answer = MinesweeperProtocol.STATUS_650 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_SQUARE_ALREADY_SWEPT;
+            player.getClient().print(answer);
+            return MinesweeperProtocol.STATUS_650_I;
+        }else{
+            answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_SQUARE_SWEPT +
+                     MinesweeperProtocol.REPLY_PARAM_DELIMITER;
+            try {
+                answer += JsonObjectMapper.toJson(sweptSquare);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        LOG.log(Level.INFO, "\n" + boardGame.toString());
+        sendAllPlayer(answer);
+
+        return MinesweeperProtocol.STATUS_250_I;
     }
 
     /**

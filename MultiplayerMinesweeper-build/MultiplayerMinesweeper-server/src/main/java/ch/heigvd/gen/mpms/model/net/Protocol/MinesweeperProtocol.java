@@ -137,6 +137,8 @@ public class MinesweeperProtocol {
     public final static String REPLY_PLAYER_SCORE                = "PLAYER SCORE";
     public final static String REPLY_NOT_IN_A_GAME               = "NOT IN A GAME";
     public final static String REPLY_PLAYER_LEFT                 = "PLAYER LEFT";
+    public final static String REPLY_PLAYER_DIED                 = "PLAYER DIED";
+    public final static String REPLY_YOU_ARE_DEAD                = "YOU ARE DEAD";
     public final static String REPLY_GAME_FINISHED               = "GAME FINISHED";
     public final static String REPLY_ALREADY_IN_A_GAME           = "ALREADY IN A GAME";
     public final static String REPLY_NOT_ENOUGH_PLAYER           = "NOT ENOUGH PLAYER";

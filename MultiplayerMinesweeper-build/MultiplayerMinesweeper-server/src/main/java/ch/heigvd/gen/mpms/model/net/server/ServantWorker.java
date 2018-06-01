@@ -74,7 +74,12 @@ public class ServantWorker implements Runnable{
     public void setPlayer(Player player){
         this.player = player;
     }
-
+    public MineSweeperGame getMineSweeperGame() {
+        return mineSweeperGame;
+    }
+    public void setMineSweeperGame(MineSweeperGame mineSweeperGame) {
+        this.mineSweeperGame = mineSweeperGame;
+    }
 
     /**
      * Run function of the thread. Listen continiusly to the client, and manage the command
@@ -576,6 +581,9 @@ public class ServantWorker implements Runnable{
 
             // - - - - - - - - - - - - - - -         START GAME        - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_START_GAME:
+
+                MineSweeperGame tmp;
+
                 if(lobby == null){
                     // Check that the player is in a lobby
                     answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_CREATED;
@@ -592,13 +600,19 @@ public class ServantWorker implements Runnable{
 
                     synchronized (lobby.getLobbyLocker()){
                         // creating a new game
-                        this.mineSweeperGame = new MineSweeperGame(lobby.getPlayers(), lobby.getConfig());
+                        tmp = new MineSweeperGame(lobby.getPlayers(), lobby.getConfig());
+
+                        // set the game for all the players
+                        for(Player player : lobby.getPlayers())
+                            player.getClient().setMineSweeperGame(tmp);
+
 
                         // Deletes the lobby
                         Lobby.deleteLobby(lobby);
                     }
 
-                    lobby = null;
+                    for(Player player : mineSweeperGame.getPlayers())
+                        player.getClient().setLobby(null);
 
                     answer = MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_GAME_STARTED;
                     mineSweeperGame.sendAllPlayer(answer);
@@ -610,11 +624,45 @@ public class ServantWorker implements Runnable{
                 break;
 
 
+
             //TODO
             // - - - - - - - - - - - - - - -            SWEEP          - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SWEEP:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_SWEEP +
-                        "\" has not been implemented yet.";
+
+                int x;
+                int y;
+
+                if(parametersAmount > MinesweeperProtocol.NBR_PARAM_SWEEP){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_TOO_MANY_ARGUMENTS;
+                }
+                else if(parametersAmount < MinesweeperProtocol.NBR_PARAM_SWEEP){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_ENOUGH_ARGUMENTS;
+                }
+                // check if the player is in a game
+                else if(mineSweeperGame == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_IN_A_GAME;
+                }
+                // Check that the player is alive
+                else if(!player.getIsAlive()) {
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_YOU_ARE_DEAD;
+                }else {
+
+                    try {
+                        x = Integer.parseInt(parameters[0]);
+                        y = Integer.parseInt(parameters[1]);
+
+                    }catch (NumberFormatException e){
+                        answer = MinesweeperProtocol.STATUS_550 + " ";
+                        this.print(answer);
+                        LOG.log(Level.INFO, answer);
+                        break;
+                    }
+
+                    mineSweeperGame.sweep(x, y, player);
+
+                    answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+
+                }
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;

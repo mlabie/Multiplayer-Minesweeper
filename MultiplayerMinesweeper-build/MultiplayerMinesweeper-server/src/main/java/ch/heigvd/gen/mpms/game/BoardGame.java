@@ -62,6 +62,7 @@ public class BoardGame {
 			}
 		}
 
+
 		if(bonusMalusEnable) {
 			//liste de coordonnees pour les bonus / malus
 			for(int i = 0; i < ratioBonus * size; ++i) {
@@ -88,6 +89,10 @@ public class BoardGame {
 		}
 	}
 
+
+	public Configuration getConfig() {
+		return config;
+	}
 
 	//false : mine, true : ok, if Square already swept, the ArrayList is empty
 	public synchronized boolean sweep(int x, int y, Player player, Vector<Square> tabOfSquare) {
