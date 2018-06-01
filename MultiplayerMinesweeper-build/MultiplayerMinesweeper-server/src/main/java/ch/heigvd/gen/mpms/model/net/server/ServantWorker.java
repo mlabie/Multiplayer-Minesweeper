@@ -255,6 +255,10 @@ public class ServantWorker implements Runnable{
 
                         // Send the actual configuration of the lobby.
                         lobby.sendActualConfig(player);
+
+                        // send the actual players
+                        lobby.sendActualPlayers(player);
+
                         answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_CREATED;
                     }
                 }
@@ -435,7 +439,7 @@ public class ServantWorker implements Runnable{
                         if(lobby.quitLobby(player) == MinesweeperProtocol.STATUS_250_I){
                             player = null;
                             lobby  = null;
-                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                            answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_LOBBY_LEFT;
                         }
                         else {
                             break;
