@@ -13,6 +13,7 @@ public class Player {
     private ServantWorker client;
     private String        playerName;
     private int           score;
+    private boolean       isAlive;
 
     public Player(String playerName){
     	this.playerName = playerName;
@@ -25,6 +26,7 @@ public class Player {
         this.client     = client;
         this.playerName = playerName;
         this.score      = 0;
+        this.isAlive    = true;
     }
 
     public String getPlayerName(){
@@ -47,10 +49,15 @@ public class Player {
         this.score = score;
     }
 
+    public boolean getIsAlive(){
+        return isAlive;
+    }
 
     public ServantWorker getClient(){
         return client;
     }
 
-
+    public void kill(){
+        isAlive = false;
+    }
 }
