@@ -1,6 +1,7 @@
 package ch.heigvd.gen.mpms.controller;
 
 //import ch.heigvd.gen.mpms.Square;
+import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -72,19 +73,7 @@ public class MineSweeperWindowController implements Initializable {
 
                 //ajout de l'action sur le jeu
                 b.setOnAction(event -> {
-                    /*
-                    if(game.board[x][y] == 9) {
-                        //ImageView iv = new ImageView(mineImage);
-                        BackgroundImage bImage = new BackgroundImage(mineImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(b.getWidth(), b.getHeight(), true, true, true, false));
-                        Background backGround = new Background(bImage);
-                        b.setBackground(backGround);
-                        //iv.setPickOnBounds(true);
-                        //b.setGraphic(iv);
-                    } else {
-                        game.sweep(x, y);
-                        refreshGame();
-                    }
-                    */
+                    //mainController.getMineSweeperClient().sweep(i,j);
                 });
 
                 gridPane.add(b, i, j, 1, 1);
@@ -99,9 +88,9 @@ public class MineSweeperWindowController implements Initializable {
 
     }
 
-    /*public void refreshGame(Vector<Square> tabOfSquareSwept) {
+    public void refreshGame(Vector<Square> tabOfSquareSwept) {
         for(int i = 0; i < tabOfSquareSwept.size(); ++i) {
 
         }
-    }*/
+    }
 }
