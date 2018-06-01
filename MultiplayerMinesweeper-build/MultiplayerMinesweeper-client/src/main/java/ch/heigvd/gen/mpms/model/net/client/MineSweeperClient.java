@@ -4,6 +4,7 @@ import ch.heigvd.gen.mpms.controller.*;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -121,11 +122,14 @@ public class MineSweeperClient {
         this.receptionistWorker = receptionistWorker;
 
 
-        // start the receptionnist thread.
-        this.receptionistWorker.start();
+
 
         // Wait that the thread sends welcome message.
         synchronized (this.receptionistWorker){
+
+            // start the receptionnist thread.
+            this.receptionistWorker.start();
+
             try {
                 LOG.log(Level.INFO, "Waiting for server welcome...");
                 this.receptionistWorker.wait(); // ici !
@@ -146,31 +150,28 @@ public class MineSweeperClient {
             return;
 
         // Send the disconnect command
-        if(senderWorker.disconnect() == -1){
+
+        if (senderWorker.disconnect() == -1) {
             System.out.println("disonnect error !");
             return;
         }
 
-
-        // Waiting for the server response
-        synchronized (receptionistWorker){
-            try {
-                receptionistWorker.wait();
-            }catch (InterruptedException e){
-                LOG.log(Level.SEVERE, e.getMessage(), e);
-            }
+        // Waiting for the server response and the receptionnist worker to stop.
+        try {
+            receptionistWorker.join();
+        } catch (InterruptedException e) {
+            LOG.log(Level.SEVERE, e.getMessage(), e);
         }
 
-        // interruption of the receptionnist worker.
-        receptionistWorker.interrupt();
+
 
         // cleaning up resources.
         senderWorker.cleanup();
 
+
         senderWorker       = null;
         receptionistWorker = null;
         lobby              = null;
-
     }
 
 
