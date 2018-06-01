@@ -105,6 +105,7 @@ public class MinesweeperProtocol {
     public final static String REPLY_ACTION_DENIED               = "ACTION DENIED";
     public final static String REPLY_LOBBY_CREATED               = "LOBBY CREATED";
     public final static String REPLY_LOBBY_JOINED                = "LOBBY JOINED";
+    public final static String REPLY_LOBBY_LEFT                  = "LOBBY LEFT";
     public final static String REPLY_LOBBY_NAME_NOT_AVAIABLE     = "LOBBY NAME NOT AVAILABLE";
     public final static String REPLY_NO_LOBBY_CREATED            = "NO LOBBY CREATED";
     public final static String REPLY_LOBBY_OPENED                = "LOBBY OPENED";
@@ -137,6 +138,8 @@ public class MinesweeperProtocol {
     public final static String REPLY_NOT_IN_A_GAME               = "NOT IN A GAME";
     public final static String REPLY_PLAYER_LEFT                 = "PLAYER LEFT";
     public final static String REPLY_GAME_FINISHED               = "GAME FINISHED";
+    public final static String REPLY_ALREADY_IN_A_GAME           = "ALREADY IN A GAME";
+    public final static String REPLY_NOT_ENOUGH_PLAYER           = "NOT ENOUGH PLAYER";
     public final static String REPLY_UNKNOWN_COMMAND             = "UNKNOWN COMMAND";
     public final static String REPLY_TOO_MANY_ARGUMENTS          = "TOO MANY ARGUMENTS";
     public final static String REPLY_NOT_ENOUGH_ARGUMENTS        = "NOT ENOUGH ARGUMENTS";

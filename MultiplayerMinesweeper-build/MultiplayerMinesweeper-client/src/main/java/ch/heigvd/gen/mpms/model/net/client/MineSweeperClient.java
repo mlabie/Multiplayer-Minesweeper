@@ -1,6 +1,7 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.*;
+import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 
 import java.net.Socket;
 import java.util.logging.Level;
@@ -21,6 +22,7 @@ public class MineSweeperClient {
     private ReceptionistWorker receptionistWorker;
 
     private MainController     mainController;
+    private Lobby              lobby;
 
     /**
      *  @brief Constructor of the class.
@@ -29,6 +31,7 @@ public class MineSweeperClient {
         this.senderWorker            = null;
         this.receptionistWorker      = null;
         this.mainController          = null;
+        this.lobby                   = null;
     }
 
 
@@ -143,8 +146,11 @@ public class MineSweeperClient {
             return;
 
         // Send the disconnect command
-        if(senderWorker.disconnect() == -1)
+        if(senderWorker.disconnect() == -1){
+            System.out.println("disonnect error !");
             return;
+        }
+
 
         // Waiting for the server response
         synchronized (receptionistWorker){
@@ -163,6 +169,7 @@ public class MineSweeperClient {
 
         senderWorker       = null;
         receptionistWorker = null;
+        lobby              = null;
 
     }
 
@@ -190,11 +197,31 @@ public class MineSweeperClient {
         senderWorker.closeLobby();
     }
 
+    public void quitLobby(){
+        senderWorker.quitLobby();
+    }
+
+    public void expelLobby(String playerName){
+        senderWorker.expelLobby(playerName);
+    }
+
     public void setPlayerAmount(int playerAmount){
         senderWorker.setPlayerAmount(playerAmount);
     }
 
+    public void setMineProportion(int proportion){
+        senderWorker.setMineProportion(proportion);
+    }
+
     public void setScoreMode(String scoreMode){
         senderWorker.setScoreMode(scoreMode);
+    }
+
+    public void enableBonusMalus(){
+        senderWorker.enableBonusMalus();
+    }
+
+    public void disableBonusMalus(){
+        senderWorker.disableBonusMalus();
     }
 }
