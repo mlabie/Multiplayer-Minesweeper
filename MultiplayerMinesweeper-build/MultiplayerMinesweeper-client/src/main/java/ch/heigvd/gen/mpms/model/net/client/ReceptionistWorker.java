@@ -208,7 +208,6 @@ public class ReceptionistWorker extends Thread {
         switch (message){
 
             case MinesweeperProtocol.REPLY_OK :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
                 break;
 
 
@@ -225,6 +224,15 @@ public class ReceptionistWorker extends Thread {
                 Platform.runLater(()->{
                     mineSweeperClient.getMainController().getWindowController().activate(WindowController.LOBBY_WINDOW);
                     mineSweeperClient.getMainController().getLobbyWindowController().setPlayerLobby();
+                });
+                break;
+
+            case  MinesweeperProtocol.REPLY_LOBBY_LEFT:
+                // Change the UI Window to lobby window.
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.MAIN_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().cleanUp();
+                    mineSweeperClient.disconnect();
                 });
                 break;
 
@@ -257,36 +265,46 @@ public class ReceptionistWorker extends Thread {
 
 
             case MinesweeperProtocol.REPLY_LOBBY_JOINED_BY :
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().addPlayer(parameters);
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_LOBBY_LEFT_BY:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().removePlayer(parameters);
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_YOU_HAVE_BEEN_EXPELLED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.MAIN_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().cleanUp();
+                    mineSweeperClient.getMainController().getMainWindowController().setInfoLabel(MinesweeperProtocol.REPLY_YOU_HAVE_BEEN_EXPELLED);
+                    mineSweeperClient.disconnect();
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_MINE_PROPORTION_IS:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    try {
+                        mineSweeperClient.getMainController().getLobbyWindowController().setMineProportion(Integer.parseInt(parameters));
+                    }catch (NumberFormatException e){
+                        LOG.log(Level.SEVERE, e.getMessage(), e);
+                    }
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS:
-                // Check that the amount of parameters is correct.
-                /*if(parameters.length() != MinesweeperProtocol.NBR_PARAM_SET_PLAYER_AMOUNT)
-                    break;*/
-
-
                 Platform.runLater(()->{
                     try {
                         mineSweeperClient.getMainController().getLobbyWindowController().setPlayerAmount(Integer.parseInt(parameters));
                     }catch (NumberFormatException e){
-
+                        LOG.log(Level.SEVERE, e.getMessage(), e);
                     }
                 });
 
@@ -306,12 +324,16 @@ public class ReceptionistWorker extends Thread {
 
 
             case  MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().enableBonusMalusCheckbox();
+                });
                 break;
 
 
             case  MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().disableBonusMalusCheckbox();
+                });
                 break;
 
 

@@ -146,6 +146,47 @@ public class SenderWorker {
 
 
     /**
+     * @brief Sends a command to server to quit the lobby in which the player is in.
+     *        The serveur will check that the player is in a lobby.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int quitLobby(){
+
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_QUIT_LOBBY;
+
+        this.print(command);
+        return 0;
+    }
+
+    /**
+     * @brief Sends a command to server to expel a player from lobby. The server will check that the player
+     *        sending the command it the admin of the lobby.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int expelLobby(String playerName){
+
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_EXPEL_LOBBY + MinesweeperProtocol.DELIMITER + playerName;
+
+        this.print(command);
+        return 0;
+    }
+
+
+    /**
      * @brief Sends a command to server to close the lobby in which the player is in.
      *        The serveur will check that the player is in a lobby, and that the player
      *        is the admin.
@@ -169,6 +210,8 @@ public class SenderWorker {
     /**
      * @brief Sends a command to server to set the actual Player Amount.
      *
+     * @param playerAmount      : The amount of player to set
+     *
      * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
      *          0 if the command was sent.
      */
@@ -187,7 +230,29 @@ public class SenderWorker {
 
 
     /**
+     * @brief Sends a command to server to set the mine proportion of the game.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int setMineProportion(int proportion){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_SET_MINE_PROPORTION + MinesweeperProtocol.DELIMITER + proportion;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+    /**
      * @brief Sends a command to server to set the actual Score Mode
+     *
+     * @param scoreMode     : The score mode to set
      *
      * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
      *          0 if the command was sent.
@@ -199,6 +264,45 @@ public class SenderWorker {
             return -1;
 
         command = MinesweeperProtocol.CMD_SET_SCORE_MODE + MinesweeperProtocol.DELIMITER + scoreMode;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+    /**
+     * @brief Sends a command to server to enable the bonus and malus
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int enableBonusMalus(){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_ENABLE_BONUS_MALUS;
+
+        this.print(command);
+
+        return 0;
+    }
+
+    /**
+     * @brief Sends a command to server to disable the bonus and malus
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int disableBonusMalus(){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_DISABLE_BONUS_MALUS;
 
         this.print(command);
 

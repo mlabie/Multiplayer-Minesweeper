@@ -4,14 +4,11 @@ import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 
 import ch.heigvd.gen.mpms.view.LobbyWindowStyle;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
-import java.util.List;
 
 
 /**
@@ -29,9 +26,14 @@ public class LobbyWindowController {
      */
     private MainController mainController;
 
+    private boolean isAdmin;
+
 
     @FXML
     private Label lobbyNameLabel;
+
+    @FXML
+    private ListView<String> playersListView;
 
     @FXML
     private Label infoLabel;
@@ -59,6 +61,13 @@ public class LobbyWindowController {
     private CheckBox bonusMalusCheckbox;
 
     @FXML
+    private Button quitLobbyButton;
+
+    @FXML
+    private Button expelLobbyButton;
+
+
+    @FXML
     private Button startGameButton;
 
 
@@ -77,6 +86,9 @@ public class LobbyWindowController {
         ObservableList<String> playerAmountChoices;
         ObservableList<String> fieldSizeChoices;
         ObservableList<String> scoreModeChoices;
+
+        mineProportionSlider.setMin((double)Configuration.PROPORTION_MIN);
+        mineProportionSlider.setMax((double)Configuration.PROPORTION_MAX);
 
         customConfigChoices = FXCollections.observableArrayList();
         playerAmountChoices = FXCollections.observableArrayList();
@@ -114,6 +126,17 @@ public class LobbyWindowController {
                         //System.out.println(scoreModeChoices.get(newSelected.intValue()))
         );
 
+
+        /*mineProportionSlider.valueProperty().addListener(
+                //(ChangeListener<Number>) (observableValue, oldVal, newVal) ->
+                        //this.mineProportionSlided(newVal.intValue())
+                //System.out.println(scoreModeChoices.get(newVal.intValue()))
+        );*/
+
+        isAdmin = false;
+
+        setInfoLabel(LobbyWindowStyle.INFO_DEFAULT);
+
     }
 
 
@@ -129,7 +152,10 @@ public class LobbyWindowController {
         mineProportionSlider.setDisable(false);
         scoreModeSelect.setDisable(false);
         bonusMalusCheckbox.setDisable(false);
+        expelLobbyButton.setDisable(false);
         startGameButton.setDisable(false);
+
+        isAdmin = true;
     }
 
 
@@ -145,7 +171,10 @@ public class LobbyWindowController {
         mineProportionSlider.setDisable(true);
         scoreModeSelect.setDisable(true);
         bonusMalusCheckbox.setDisable(true);
+        expelLobbyButton.setDisable(true);
         startGameButton.setDisable(true);
+
+        isAdmin = false;
     }
 
     /**
@@ -165,6 +194,41 @@ public class LobbyWindowController {
      */
     public void setInfoLabel(String info) {
         infoLabel.setText(info);
+    }
+
+    /**
+     * Adds a player to the player listView
+     *
+     * @param playerName    : The name of the player
+     */
+    public void addPlayer(String playerName){
+        playersListView.getItems().add(playerName);
+    }
+
+    /**
+     * Removes a player from the listView
+     *
+     * @param playerName    : The name of the player
+     */
+    public void removePlayer(String playerName){
+        playersListView.getItems().removeAll(playerName);
+    }
+
+
+    /**
+     *
+     * @param actionEvent
+     */
+    public void expelLobbyButtonClicked(ActionEvent actionEvent) {
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+                ObservableList<String> players;
+                players = playersListView.getSelectionModel().getSelectedItems();
+                for(String player : players){
+                    mainController.getMineSweeperClient().expelLobby(player);
+                }
+            }
+        }
     }
 
 
@@ -200,12 +264,22 @@ public class LobbyWindowController {
         if(amount < Configuration.MIN_SLOT || amount > Configuration.MAX_SLOT)
             return;
 
-
         playerAmountSelect.setValue(String.valueOf(amount));
+    }
 
 
-        //setInfoLabel("player amount : " + amount);
+    /**
+     * @brief Set the actual mine proportion of the field in the Mine Proportion slider.
+     *
+     * @param proportion : The mine proportion. Must not be smaller than Configuration.PROPORTION_MIN
+     *                     and greater than Configuration.PROPORTION_MAX
+     */
+    public void setMineProportion(int proportion){
 
+        if(proportion < Configuration.PROPORTION_MIN || proportion > Configuration.PROPORTION_MAX)
+            return;
+
+        mineProportionSlider.setValue((double)proportion);
     }
 
 
@@ -225,6 +299,22 @@ public class LobbyWindowController {
 
 
     /**
+     * @brief sets the Bonus/Malus checkbox as checked
+     */
+    public void enableBonusMalusCheckbox(){
+        bonusMalusCheckbox.setSelected(true);
+    }
+
+
+    /**
+     * @brief sets the Bonus/Malus checkbox as unChecked.
+     */
+    public void disableBonusMalusCheckbox(){
+        bonusMalusCheckbox.setSelected(false);
+    }
+
+
+    /**
      * @brief Function called when the "openLobbyToggleButton" is toggled.
      *        If its new state is toggled, opens the lobby to new players.
      *        If its new state isn't toggled, closes the lobby to new players.
@@ -233,10 +323,12 @@ public class LobbyWindowController {
      */
     public void openLobbyToggled(ActionEvent actionEvent) {
         synchronized (lobbyWindowLock){
-            if(openLobbyToggleButton.isSelected()){
-                mainController.getMineSweeperClient().openLobby();
-            }else {
-                mainController.getMineSweeperClient().closeLobby();
+            if(isAdmin){
+                if(openLobbyToggleButton.isSelected()){
+                    mainController.getMineSweeperClient().openLobby();
+                }else {
+                    mainController.getMineSweeperClient().closeLobby();
+                }
             }
         }
     }
@@ -249,14 +341,16 @@ public class LobbyWindowController {
      */
     private void playerAmountSelected(String amount) {
         synchronized (lobbyWindowLock){
-            try {
-                mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(amount));
-            }catch (NumberFormatException e){
-                return;
+            if(isAdmin){
+                try {
+                    mainController.getMineSweeperClient().setPlayerAmount(Integer.parseInt(amount));
+                }catch (NumberFormatException e){
+                    return;
+                }
             }
-
         }
     }
+
 
     /**
      * @brief Function called when a choice in the "scoreModeSelect" choice box is selected. .
@@ -266,7 +360,79 @@ public class LobbyWindowController {
      */
     private void scoreModeSelected(String scoreMode) {
         synchronized (lobbyWindowLock){
-            mainController.getMineSweeperClient().setScoreMode(scoreMode);
+            if(isAdmin){
+                mainController.getMineSweeperClient().setScoreMode(scoreMode);
+            }
+        }
+    }
+
+    /**
+     * @brief Function called when the Bonus/Malus checkbox is checked.
+     *        Sends a command to the server to enable/disable the bonus and malus.
+     *
+     * @param actionEvent
+     */
+    public void bonusMalusChecked(ActionEvent actionEvent) {
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+                if(bonusMalusCheckbox.isSelected()){
+                    mainController.getMineSweeperClient().enableBonusMalus();
+                }else {
+                    mainController.getMineSweeperClient().disableBonusMalus();
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief Function called when the Bonus/Malus checkbox is checked.
+     *        Sends a command to the server to enable/disable the bonus and malus.
+     *
+     * @param proportion
+     */
+    private void mineProportionSlided(int proportion) {
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+                mainController.getMineSweeperClient().setMineProportion(proportion);
+            }
+        }
+    }
+
+
+    /**
+     * @brief Function called when the "quitLobbyButton" is clicked.
+     *        Makes the player leave the lobby by sending a command to the server.
+     *
+     * @param actionEvent
+     */
+    public void quitLobbyButtonClicked(ActionEvent actionEvent) {
+        synchronized (lobbyWindowLock){
+            mainController.getMineSweeperClient().quitLobby();
+        }
+    }
+
+    /**
+     * @brief Function called when the "startGameButton" is clicked.
+     *        Sends a command to the server to starts a new game.
+     *        The player needs to be the admin for the client to send
+     *        the command.
+     *
+     * @param actionEvent
+     */
+    public void startGameButtonClicked(ActionEvent actionEvent) {
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+
+            }
+        }
+    }
+
+    /**
+     * Clears the lobby window.
+     */
+    public void cleanUp() {
+        synchronized (lobbyWindowLock){
+            playersListView.getItems().clear();
         }
     }
 

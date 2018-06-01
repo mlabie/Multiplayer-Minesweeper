@@ -105,6 +105,7 @@ public class MinesweeperProtocol {
     public final static String REPLY_ACTION_DENIED               = "ACTION DENIED";
     public final static String REPLY_LOBBY_CREATED               = "LOBBY CREATED";
     public final static String REPLY_LOBBY_JOINED                = "LOBBY JOINED";
+    public final static String REPLY_LOBBY_LEFT                  = "LOBBY LEFT";
     public final static String REPLY_LOBBY_NAME_NOT_AVAIABLE     = "LOBBY NAME NOT AVAILABLE";
     public final static String REPLY_NO_LOBBY_CREATED            = "NO LOBBY CREATED";
     public final static String REPLY_LOBBY_OPENED                = "LOBBY OPENED";
