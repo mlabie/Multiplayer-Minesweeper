@@ -43,6 +43,10 @@ public class Player {
         this.score += score;
     }
 
+    public void setScore(int score){
+        this.score = score;
+    }
+
 
     public ServantWorker getClient(){
         return client;

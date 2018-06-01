@@ -1,6 +1,8 @@
 package ch.heigvd.gen.mpms.model.net.server;
 
+import ch.heigvd.gen.mpms.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.GameComponent.Player;
+import ch.heigvd.gen.mpms.game.MineSweeperGame;
 import ch.heigvd.gen.mpms.lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
@@ -28,8 +30,10 @@ public class ServantWorker implements Runnable{
     private BufferedReader  br = null;
     private PrintWriter     pw = null;
 
-    private Lobby  lobby  = null;
-    private Player player = null;
+
+    private Player          player          = null;
+    private Lobby           lobby           = null;
+    private MineSweeperGame mineSweeperGame = null;
 
 
 
@@ -570,11 +574,37 @@ public class ServantWorker implements Runnable{
 
 
 
-            //TODO
             // - - - - - - - - - - - - - - -         START GAME        - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_START_GAME:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_START_GAME +
-                        "\" has not been implemented yet.";
+                if(lobby == null){
+                    // Check that the player is in a lobby
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NO_LOBBY_CREATED;
+                } else if(mineSweeperGame != null){
+                    // Check that the player is in a game
+                    answer = MinesweeperProtocol.STATUS_550 + " " ;
+                }else if(lobby.getPlayers().size() < Configuration.MIN_SLOT || lobby.getPlayers().size() > Configuration.MAX_SLOT) {
+                    // Check that the number of player in the slot is allowed
+                    answer = MinesweeperProtocol.STATUS_550 + " " ;
+                }else if(lobby.isOpened()){
+                    // Check that the lobby is closed
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_LOBBY_OPENED;
+                }else {
+
+                    synchronized (lobby.getLobbyLocker()){
+                        // creating a new game
+                        this.mineSweeperGame = new MineSweeperGame(lobby.getPlayers(), lobby.getConfig());
+
+                        // Deletes the lobby
+                        Lobby.deleteLobby(lobby);
+                    }
+
+                    lobby = null;
+
+                    answer = MinesweeperProtocol.STATUS_350 + " " + MinesweeperProtocol.REPLY_GAME_STARTED;
+                    mineSweeperGame.sendAllPlayer(answer);
+                    answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
+                }
+
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;

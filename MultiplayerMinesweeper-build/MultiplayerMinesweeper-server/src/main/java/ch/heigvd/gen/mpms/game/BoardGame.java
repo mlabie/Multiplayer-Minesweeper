@@ -11,8 +11,8 @@ public class BoardGame {
 	private int size;
 	private boolean bonusMalusEnable;
 	private Configuration config;
-	private final int idMine = 10;
-	private int valueOfIncrScore = 10;
+	private final int idMine        = 10;
+	private int valueOfIncrScore    = 10;
 	private final double ratioBonus = 0.01;
 	private final double ratioMalus = 0.01;
 
