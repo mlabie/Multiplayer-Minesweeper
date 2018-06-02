@@ -624,8 +624,7 @@ public class ServantWorker implements Runnable{
                 break;
 
 
-
-            //TODO
+                
             // - - - - - - - - - - - - - - -            SWEEP          - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_SWEEP:
 
