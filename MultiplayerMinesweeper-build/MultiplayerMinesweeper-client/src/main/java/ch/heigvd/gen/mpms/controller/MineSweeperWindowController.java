@@ -65,7 +65,7 @@ public class MineSweeperWindowController {
                 int y = j;
 
                 b.setOnAction(event -> {
-                    //mainController.getMineSweeperClient().sweep(i, j);
+
                 });
 
                 gridPane.add(b, i, j, 1, 1);

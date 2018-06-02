@@ -64,29 +64,26 @@ public class ReceptionistWorker extends Thread {
             br  = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             run = 0;
 
-            while (clientSocket.isConnected() && run == 0) {
+            while (run == 0 && clientSocket.isConnected()) {
 
 
                 answer = br.readLine();
                 synchronized (this){
-
                     LOG.log(Level.INFO, answer);
                     // send the answer to the answer manager.
                     run = answerManager(answer);
                 }
+
             }
 
             if (br != null)
                 br.close();
 
-            if (clientSocket != null)
-                clientSocket.close();
-
         }catch (IOException e){
             LOG.log(Level.SEVERE, e.getMessage(), e);
         }
-
     }
+
 
     /**
      * Split the answer received from the server and send it to one of those following function depending
@@ -182,7 +179,6 @@ public class ReceptionistWorker extends Thread {
 
 
             case  MinesweeperProtocol.GOODBYE:
-                notify();
                 return -1;
 
             default:
