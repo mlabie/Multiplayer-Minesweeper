@@ -1,10 +1,12 @@
 package ch.heigvd.gen.mpms.controller;
 
 //import ch.heigvd.gen.mpms.Square;
+import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
@@ -17,15 +19,21 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
-public class MineSweeperWindowController implements Initializable {
+public class MineSweeperWindowController {
 
 
     private MainController mainController;
 
+    //@FXML
+    //private AnchorPane gamePane;
     @FXML
-    private AnchorPane gamePane;
+    private AnchorPane mainPane;
+
+    private GridPane gridPane = new GridPane();
 
     private Button[][] buttons;
+
+    private static int buttonSize = 30;
 
     private static String[] colorButtons = {"blue", "green", "orange", "grey", "red", "black"};
 
@@ -35,14 +43,42 @@ public class MineSweeperWindowController implements Initializable {
         this.mainController = mainController;
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void setField(int width, int height) {
 
+        // First remove current graphics
+        //gridPane.getChildren().remove(buttons);
 
-        int width = 20;
-        int height = 20;
+        // Set field size
+        //mainPane.setMinSize(300 + buttonSize * width, 100 + buttonSize * height);
 
+        // Add buttons
         buttons = new Button[width][height];
+
+        for(int i = 0; i < width; ++i) {
+            for(int j = 0; j < height; ++j) {
+
+                Button b = new Button();
+                b.setPrefSize(buttonSize, buttonSize);
+                buttons[i][j] = b;
+
+                int x = i;
+                int y = j;
+
+                b.setOnAction(event -> {
+                    //mainController.getMineSweeperClient().sweep(i, j);
+                });
+
+                gridPane.add(b, i, j, 1, 1);
+
+            }
+        }
+
+        mainPane.getChildren().add(gridPane);
+
+    }
+
+
+    public void initialize() {
 
         /*
         try {
@@ -52,56 +88,11 @@ public class MineSweeperWindowController implements Initializable {
             e.printStackTrace();
         }
         */
-
-        GridPane gridPane = new GridPane();
-
-        for(int i = 0; i < width; ++i) {
-            for(int j = 0; j < height; ++j) {
-
-                //style des boutons
-                Button b = new Button();
-                b.setPrefSize(40, 40);
-                buttons[i][j] = b;
-
-                int x = i;
-                int y = j;
-
-                /*TODO
-                bouton droit -> ajout ou suppression du drapreau
-                 */
-
-                //ajout de l'action sur le jeu
-                b.setOnAction(event -> {
-                    /*
-                    if(game.board[x][y] == 9) {
-                        //ImageView iv = new ImageView(mineImage);
-                        BackgroundImage bImage = new BackgroundImage(mineImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, new BackgroundSize(b.getWidth(), b.getHeight(), true, true, true, false));
-                        Background backGround = new Background(bImage);
-                        b.setBackground(backGround);
-                        //iv.setPickOnBounds(true);
-                        //b.setGraphic(iv);
-                    } else {
-                        game.sweep(x, y);
-                        refreshGame();
-                    }
-                    */
-                });
-
-                gridPane.add(b, i, j, 1, 1);
-            }
-        }
-
-
-        //gridPane au centre
-        gridPane.setLayoutX(50);
-        gridPane.setLayoutY(50);
-        gamePane.getChildren().add(gridPane);
-
     }
 
-    /*public void refreshGame(Vector<Square> tabOfSquareSwept) {
+    public void refreshGame(Vector<Square> tabOfSquareSwept) {
         for(int i = 0; i < tabOfSquareSwept.size(); ++i) {
 
         }
-    }*/
+    }
 }
