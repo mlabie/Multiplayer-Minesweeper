@@ -1,6 +1,7 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.*;
+import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 
 import java.net.Socket;
@@ -24,6 +25,7 @@ public class MineSweeperClient {
 
     private MainController     mainController;
     private Lobby              lobby;
+    private MineSweeperGame    mineSweeperGame;
 
     /**
      *  @brief Constructor of the class.
@@ -85,6 +87,21 @@ public class MineSweeperClient {
         this.receptionistWorker = receptionistWorker;
     }
 
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public void setLobby(Lobby lobby) {
+        this.lobby = lobby;
+    }
+
+    public MineSweeperGame getMineSweeperGame() {
+        return mineSweeperGame;
+    }
+
+    public void setMineSweeperGame(MineSweeperGame mineSweeperGame) {
+        this.mineSweeperGame = mineSweeperGame;
+    }
 
     /**
      *
@@ -172,6 +189,7 @@ public class MineSweeperClient {
         senderWorker       = null;
         receptionistWorker = null;
         lobby              = null;
+        mineSweeperGame    = null;
     }
 
 
@@ -224,5 +242,13 @@ public class MineSweeperClient {
 
     public void disableBonusMalus(){
         senderWorker.disableBonusMalus();
+    }
+
+    public void startGame(){
+        senderWorker.startGame();
+    }
+
+    public void sweep(int x, int y){
+        senderWorker.sweep(x, y);
     }
 }

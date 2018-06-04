@@ -11,6 +11,9 @@ public class Square {
         this.x = x;
         this.y = y;
     }
+    //Introducing the dummy constructor
+    public Square() {
+    }
 
     public int getX() {
         return x;

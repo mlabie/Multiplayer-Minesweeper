@@ -1,13 +1,20 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.WindowController;
+import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
+import ch.heigvd.gen.mpms.model.GameComponent.Player;
+import ch.heigvd.gen.mpms.model.GameComponent.Square;
+import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
+import com.fasterxml.jackson.core.type.TypeReference;
 import javafx.application.Platform;
+import ch.heigvd.gen.mpms.JsonObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -211,6 +218,7 @@ public class ReceptionistWorker extends Thread {
                 // Change the UI Window to lobby window.
                 Platform.runLater(()->{
                     mineSweeperClient.getMainController().getWindowController().activate(WindowController.LOBBY_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().setLobbyNameLabel(mineSweeperClient.getLobby().getName());
                     mineSweeperClient.getMainController().getLobbyWindowController().setAdminLobby();
                 });
                 break;
@@ -219,6 +227,7 @@ public class ReceptionistWorker extends Thread {
                 // Change the UI Window to lobby window.
                 Platform.runLater(()->{
                     mineSweeperClient.getMainController().getWindowController().activate(WindowController.LOBBY_WINDOW);
+                    mineSweeperClient.getMainController().getLobbyWindowController().setLobbyNameLabel(mineSweeperClient.getLobby().getName());
                     mineSweeperClient.getMainController().getLobbyWindowController().setPlayerLobby();
                 });
                 break;
@@ -262,6 +271,7 @@ public class ReceptionistWorker extends Thread {
 
             case MinesweeperProtocol.REPLY_LOBBY_JOINED_BY :
                 Platform.runLater(()->{
+                    mineSweeperClient.getLobby().addPlayer(new Player(parameters));
                     mineSweeperClient.getMainController().getLobbyWindowController().addPlayer(parameters);
                 });
                 break;
@@ -269,6 +279,7 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_LOBBY_LEFT_BY:
                 Platform.runLater(()->{
+                    mineSweeperClient.getLobby().removePlayer(parameters);
                     mineSweeperClient.getMainController().getLobbyWindowController().removePlayer(parameters);
                 });
                 break;
@@ -332,6 +343,31 @@ public class ReceptionistWorker extends Thread {
                 });
                 break;
 
+            case  MinesweeperProtocol.REPLY_GAME_STARTED:
+                Platform.runLater(()->{
+
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setField(
+                            mineSweeperClient.getLobby().getConfig().getWidth(),mineSweeperClient.getLobby().getConfig().getHeight());
+
+                    mineSweeperClient.setMineSweeperGame(new MineSweeperGame(mineSweeperClient.getLobby().getPlayers()));
+                    mineSweeperClient.setLobby(null);
+
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.MINESWEEPER_WINDOW);
+                });
+                break;
+
+            case  MinesweeperProtocol.REPLY_SQUARE_SWEPT:
+                Platform.runLater(()->{
+                    Vector<Square> sweptSquare;
+                    try {
+                        sweptSquare = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
+                        mineSweeperClient.getMainController().getMineSweeperWindowController().refreshGame(sweptSquare);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+
 
                 default:
                     LOG.log(Level.INFO, "Unhandled information message.");
@@ -389,6 +425,19 @@ public class ReceptionistWorker extends Thread {
                 Platform.runLater(()->{
                     // Disconnect.
                     mineSweeperClient.disconnect();
+                });
+                break;
+
+            case MinesweeperProtocol.REPLY_NOT_ENOUGH_PLAYER :
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().setInfoLabel(MinesweeperProtocol.REPLY_NOT_ENOUGH_PLAYER);
+                });
+                break;
+
+
+            case MinesweeperProtocol.REPLY_LOBBY_OPENED :
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getLobbyWindowController().setInfoLabel(MinesweeperProtocol.REPLY_LOBBY_OPENED);
                 });
                 break;
 

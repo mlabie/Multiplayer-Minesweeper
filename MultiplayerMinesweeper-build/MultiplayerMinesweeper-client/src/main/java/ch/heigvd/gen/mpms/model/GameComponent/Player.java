@@ -8,13 +8,17 @@ package ch.heigvd.gen.mpms.model.GameComponent;
  */
 public class Player {
 
+    public static int playerNumber = 0;
+
     private String playerName;
     private int score;
+    private int number;
 
 
     public Player(String playerName) {
         this.playerName = playerName;
-        this.score = 0;
+        this.score      = 0;
+        this.number     = ++playerNumber;
     }
 
     public String getPlayerName() {
@@ -33,5 +37,12 @@ public class Player {
         this.score = score;
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 }
 

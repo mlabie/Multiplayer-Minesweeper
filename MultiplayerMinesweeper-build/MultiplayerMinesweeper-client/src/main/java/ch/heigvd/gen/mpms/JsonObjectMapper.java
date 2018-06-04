@@ -1,8 +1,11 @@
-package ch.heigvd.res.labs.roulette.data;
+package ch.heigvd.gen.mpms;
 
+import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.Vector;
 
 /**
  * This class provides utility methods to convert Plain Old Java Objects (POJOs)
@@ -24,7 +27,7 @@ public class JsonObjectMapper {
    * @return an instance of T, which value corresponds to the json string
    * @throws IOException
    */
-  public static <T> T parseJson(String json, Class<T> type) throws IOException {
+  public static <T> T parseJson(String json, TypeReference<Vector<Square>> type) throws IOException {
     return objectMapper.readValue(json, type);
   }
 
