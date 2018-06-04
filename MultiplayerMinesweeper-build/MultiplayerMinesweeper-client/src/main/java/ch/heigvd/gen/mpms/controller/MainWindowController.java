@@ -1,6 +1,7 @@
 package ch.heigvd.gen.mpms.controller;
 
 
+import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.view.MainWindowStyle;
 import javafx.event.ActionEvent;
@@ -118,6 +119,7 @@ public class MainWindowController {
             return;
         }
 
+        mainController.getMineSweeperClient().setLobby(new Lobby(lobbyName));
         mainController.getMineSweeperClient().joinLobby(lobbyName, playerName);
 
     }
@@ -171,6 +173,7 @@ public class MainWindowController {
             return;
         }
 
+        mainController.getMineSweeperClient().setLobby(new Lobby(lobbyName));
         mainController.getMineSweeperClient().createLobby(lobbyName, playerName);
     }
 

@@ -26,6 +26,7 @@ public class LobbyWindowController {
      */
     private MainController mainController;
 
+
     private boolean isAdmin;
 
 
@@ -422,7 +423,7 @@ public class LobbyWindowController {
     public void startGameButtonClicked(ActionEvent actionEvent) {
         synchronized (lobbyWindowLock){
             if(isAdmin){
-
+                mainController.getMineSweeperClient().startGame();
             }
         }
     }

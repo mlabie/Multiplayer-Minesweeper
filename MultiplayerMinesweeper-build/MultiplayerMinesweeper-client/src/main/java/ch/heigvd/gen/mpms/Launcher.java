@@ -68,6 +68,9 @@ public class Launcher extends Application{
         // Setting first Window as Main Window.
         mainController.getWindowController().activate(WindowController.MAIN_WINDOW);
 
+        //mainController.getMineSweeperWindowController().setField(16,16);
+        //mainController.getWindowController().activate(WindowController.MINESWEEPER_WINDOW);
+
 
 
 
