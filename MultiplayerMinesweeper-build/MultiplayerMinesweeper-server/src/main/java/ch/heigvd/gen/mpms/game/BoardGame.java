@@ -106,6 +106,7 @@ public class BoardGame {
 
 			board[I][J].setSwept(true);
 			board[I][J].setPlayerName(player.getPlayerName());
+
 			if(config.getScore().equals(Configuration.ScoreMode.EXPLORER)){
 				player.addScore(valueOfIncrScore);
 			}else if (config.getScore().equals(Configuration.ScoreMode.STANDARD)){
