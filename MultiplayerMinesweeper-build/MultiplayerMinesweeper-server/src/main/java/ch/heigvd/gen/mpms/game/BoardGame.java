@@ -8,13 +8,16 @@ import java.util.Vector;
 
 public class BoardGame {
 	private Square[][] board;
+	private Vector<Square> tabOfMineOfTheBoard;
 	private int size;
 	private boolean bonusMalusEnable;
 	private Configuration config;
-	private final int idMine = 10;
+	private final int mineValue = 10;
 	private int valueOfIncrScore = 10;
 	private final double ratioBonus = 0.005;
 	private final double ratioMalus = 0.007;
+
+
 
 	public BoardGame(Configuration configuration){
 		this.config = configuration;
@@ -40,21 +43,20 @@ public class BoardGame {
 			do {
 				x = random.nextInt(height);
 				y = random.nextInt(width);
-			} while(board[x][y].getValue() == idMine);
-			board[x][y].setValue(idMine);
+			} while(board[x][y].getValue() == mineValue);
+			board[x][y].setValue(mineValue);
 
-			//mise a jour des cases adjacentes aux mines
-			//position courante
-			int I = x, J = y;
+			//update of the adjacent mine's square with their value
+			int I = x, J = y; //current position
 			for(int dirX = -1; dirX <= 1; ++dirX) {
 				for (int dirY = -1; dirY <= 1; ++dirY) {
-					//exclut le cas (0,0)
+					//exclude the case (0,0)
 					if (dirX != 0 || dirY != 0) {
 						if (I + dirX >= 0 && I + dirX < height &&
 								J + dirY >= 0 && J + dirY < width) {
 
 							int value = board[I + dirX][J + dirY].getValue();
-							if (value != idMine)
+							if (value != mineValue)
 								board[I + dirX][J + dirY].setValue(value + 1);
 						}
 					}
@@ -64,29 +66,50 @@ public class BoardGame {
 
 
 		if(bonusMalusEnable) {
-			//liste de coordonnees pour les bonus / malus
+			//insert the bonus in the board
 			for(int i = 0; i < ratioBonus * size; ++i) {
 				int x;
 				int y;
 				do {
 					x = random.nextInt(height);
 					y = random.nextInt(width);
-				} while (board[x][y].isBonus() || board[x][y].getValue() == idMine || board[x][y].getValue() == 0);
+				} while (board[x][y].isBonus() || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
 				board[x][y].setBonus(true);
 			}
 
+			//insert the malus in the board
 			for(int i = 0; i < ratioMalus * size; ++i) {
 				int x;
 				int y;
 				do {
 					x = random.nextInt(height);
 					y = random.nextInt(width);
-				} while (board[x][y].isBonus() || board[x][y].isMalus() || board[x][y].getValue() == idMine
+				} while (board[x][y].isBonus() || board[x][y].isMalus() || board[x][y].getValue() == mineValue
 						 || board[x][y].getValue() == 0);
 				board[x][y].setMalus(true);
 			}
-
 		}
+
+		//this tab will be sent to the players who died to show them the mines in the GUI
+		tabOfMineOfTheBoard = minesOfTheBoard();
+
+	}
+
+
+	private Vector<Square> minesOfTheBoard(){
+		Vector<Square> tabOfMine = new Vector<>();
+		for(int i = 0; i < config.getHeight(); ++i) {
+			for (int j = 0; j < config.getWidth(); ++j) {
+				if(board[i][j].getValue() == mineValue)
+					tabOfMine.add(board[i][j]);
+			}
+		}
+		return tabOfMine;
+	}
+
+
+	public Vector<Square> getTabOfMineOfTheBoard() {
+		return tabOfMineOfTheBoard;
 	}
 
 
@@ -94,13 +117,14 @@ public class BoardGame {
 		return config;
 	}
 
+
 	//false : mine, true : ok, if Square already swept, the ArrayList is empty
 	public synchronized boolean sweep(int x, int y, Player player, Vector<Square> tabOfSquare) {
 		if(!board[x][y].isSwept()) {
 			int I = x, J = y;
 
 			//if a mine is discovered, the square won't change for the other players so they could fall in it
-			if (board[I][J].getValue() == idMine) {
+			if (board[I][J].getValue() == mineValue) {
 				return false;
 			}
 
@@ -118,12 +142,11 @@ public class BoardGame {
 			tabOfSquare.add(board[I][J]);
 
 
-			//il faut que la case courante ne soit pas adjacente
-			//a des mines pour poursuivre la recherche autour
+			//Current square can't be adjacent of a mine's square to follow the research in the board
 			if (board[I][J].getValue() == 0) {
 				for (int dirX = -1; dirX <= 1; ++dirX) {
 					for (int dirY = -1; dirY <= 1; ++dirY) {
-						//exclut le cas (0,0)
+						//exclude the case (0,0)
 						if (dirX != 0 || dirY != 0) {
 							if (I + dirX >= 0 && I + dirX < config.getHeight() && J + dirY >= 0 && J + dirY <
 									config.getWidth() && !board[I + dirX][J + dirY].isSwept() &&
@@ -138,6 +161,7 @@ public class BoardGame {
 		return true;
 	}
 
+	
 	public String toString() {
 		String game = "";
 		for(int i = 0; i < config.getHeight(); ++i) {
@@ -151,7 +175,7 @@ public class BoardGame {
 				}else if (s.isMalus()){
 					line += "M ";
 				}else {
-					line += s.getValue() == idMine ? "* " : s.getValue() + " ";
+					line += s.getValue() == mineValue ? "* " : s.getValue() + " ";
 				}
 			}
 			game += line + "\n";
