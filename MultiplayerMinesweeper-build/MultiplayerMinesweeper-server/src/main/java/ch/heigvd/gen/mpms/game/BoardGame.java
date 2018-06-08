@@ -17,6 +17,10 @@ public class BoardGame {
 	private final double ratioBonus = 0.005;
 	private final double ratioMalus = 0.007;
 
+	private int mineAmount;
+	private int squareAmount;
+	private int squareSweptAmount;
+
 
 
 	public BoardGame(Configuration configuration){
@@ -93,8 +97,23 @@ public class BoardGame {
 		//this tab will be sent to the players who died to show them the mines in the GUI
 		tabOfMineOfTheBoard = minesOfTheBoard();
 
+		mineAmount     	   = tabOfMineOfTheBoard.size();
+		squareAmount 	   = width * height;
+		squareSweptAmount  = 0;
+
 	}
 
+	public int getMineAmount() {
+		return mineAmount;
+	}
+
+	public int getSquareAmount() {
+		return squareAmount;
+	}
+
+	public int getSquareSweptAmount() {
+		return squareSweptAmount;
+	}
 
 	private Vector<Square> minesOfTheBoard(){
 		Vector<Square> tabOfMine = new Vector<>();
@@ -140,6 +159,7 @@ public class BoardGame {
 			}
 
 			tabOfSquare.add(board[I][J]);
+			squareSweptAmount++;
 
 
 			//Current square can't be adjacent of a mine's square to follow the research in the board

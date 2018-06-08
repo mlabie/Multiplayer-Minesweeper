@@ -132,6 +132,13 @@ public class ServantWorker implements Runnable{
                 lobby = null;
             }
 
+            if(mineSweeperGame != null){
+                mineSweeperGame.quitGame(player);
+                mineSweeperGame = null;
+            }
+
+            player = null;
+
             br.close();
             pw.close();
             clientSocket.close();
@@ -196,8 +203,7 @@ public class ServantWorker implements Runnable{
 
 
         // Get the parameters of the command
-        parameters       = parameter(request.replace(command, ""),
-                                     MinesweeperProtocol.DELIMITER);
+        parameters       = parameter(request.replace(command, ""), MinesweeperProtocol.DELIMITER);
         parametersAmount = parameters.length;
 
 
@@ -428,15 +434,6 @@ public class ServantWorker implements Runnable{
 
 
 
-            //TODO
-            // - - - - - - - - - - - - - - -          QUIT GAME          - - - - - - - - - - - - - - - //
-            case MinesweeperProtocol.CMD_QUIT_GAME:
-                answer = MinesweeperProtocol.STATUS_650 + " the command \"" + MinesweeperProtocol.CMD_QUIT_GAME +
-                        "\" has not been implemented yet.";
-                this.print(answer);
-                LOG.log(Level.INFO, answer);
-                break;
-
 
             // - - - - - - - - - - - - - - -          QUIT LOBBY         - - - - - - - - - - - - - - - //
             case MinesweeperProtocol.CMD_QUIT_LOBBY:
@@ -657,7 +654,9 @@ public class ServantWorker implements Runnable{
                         break;
                     }
 
-                    mineSweeperGame.sweep(x, y, player);
+                    if(mineSweeperGame.sweep(x, y, player) != MinesweeperProtocol.STATUS_250_I){
+                        break;
+                    }
 
                     answer = MinesweeperProtocol.STATUS_250 + " " + MinesweeperProtocol.REPLY_OK;
 
@@ -665,6 +664,30 @@ public class ServantWorker implements Runnable{
                 this.print(answer);
                 LOG.log(Level.INFO, answer);
                 break;
+
+
+
+
+            // - - - - - - - - - - - - - - -          QUIT GAME          - - - - - - - - - - - - - - - //
+            case MinesweeperProtocol.CMD_QUIT_GAME:
+                if(mineSweeperGame == null){
+                    answer = MinesweeperProtocol.STATUS_550 + " " + MinesweeperProtocol.REPLY_NOT_IN_A_GAME;
+                }else{
+                    status = mineSweeperGame.quitGame(player);
+
+                    if(status == MinesweeperProtocol.STATUS_650_I){
+                        answer = MinesweeperProtocol.STATUS_650 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_PLAYER_NOT_FOUND;
+                    }else{
+                        answer = MinesweeperProtocol.STATUS_250 + MinesweeperProtocol.DELIMITER +MinesweeperProtocol.REPLY_GAME_LEFT;
+                        player           = null;
+                        mineSweeperGame  = null;
+                    }
+                }
+
+                this.print(answer);
+                LOG.log(Level.INFO, answer);
+                break;
+
 
 
 
