@@ -2,6 +2,8 @@ package ch.heigvd.gen.mpms;
 
 import ch.heigvd.gen.mpms.controller.*;
 
+import ch.heigvd.gen.mpms.model.GameComponent.Player;
+import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -13,6 +15,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
+import java.util.Vector;
 import java.util.logging.Level;
 
 public class Launcher extends Application{
@@ -68,8 +72,33 @@ public class Launcher extends Application{
         // Setting first Window as Main Window.
         mainController.getWindowController().activate(WindowController.MAIN_WINDOW);
 
-        //mainController.getMineSweeperWindowController().setField(16,16);
-        //mainController.getWindowController().activate(WindowController.MINESWEEPER_WINDOW);
+        /*ArrayList<Player> players = new ArrayList<>();
+        Player player1 = new Player("Test1");
+        Player player2 = new Player("Test2");
+
+        players.add(player1);
+        players.add(player2);
+
+        mainController.getMineSweeperWindowController().setPlayer(players);
+
+        player1.setScore(10);
+        mainController.getMineSweeperWindowController().setScore(player1);*/
+
+        /*
+
+        Square sq1 = new Square(0,0);
+        Square sq2 = new Square(0,1);
+        Square sq3 = new Square(5,5);
+
+        Vector<Square> mines = new Vector<>();
+        mines.add(sq1);
+        mines.add(sq2);
+        mines.add(sq3);
+
+        mainController.getMineSweeperWindowController().showMines(mines);*/
+
+        /*mainController.getMineSweeperWindowController().setField(16,16);
+        mainController.getWindowController().activate(WindowController.MINESWEEPER_WINDOW);*/
 
 
 
