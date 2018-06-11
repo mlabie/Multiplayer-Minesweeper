@@ -1,4 +1,4 @@
-package ch.heigvd.gen.mpms;
+package ch.heigvd.gen.mpms.model.net.server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
