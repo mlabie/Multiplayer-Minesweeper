@@ -30,11 +30,11 @@ public class BoardGame {
 
 		int width = config.getWidth();
 		int height = config.getHeight();
-		board = new Square[height][width];
+		board = new Square[width][height];
 		size = width * height;
 
-		for (int i = 0; i < height; i++){
-			for (int j = 0; j < width; j++){
+		for (int i = 0; i < width; i++){
+			for (int j = 0; j < height; j++){
 				board[i][j] = new Square(i, j);
 			}
 		}
@@ -45,8 +45,8 @@ public class BoardGame {
 			int x;
 			int y;
 			do {
-				x = random.nextInt(height);
-				y = random.nextInt(width);
+				x = random.nextInt(width);
+				y = random.nextInt(height);
 			} while(board[x][y].getValue() == mineValue);
 			board[x][y].setValue(mineValue);
 
@@ -56,8 +56,8 @@ public class BoardGame {
 				for (int dirY = -1; dirY <= 1; ++dirY) {
 					//exclude the case (0,0)
 					if (dirX != 0 || dirY != 0) {
-						if (I + dirX >= 0 && I + dirX < height &&
-								J + dirY >= 0 && J + dirY < width) {
+						if (I + dirX >= 0 && I + dirX < width &&
+								J + dirY >= 0 && J + dirY < height) {
 
 							int value = board[I + dirX][J + dirY].getValue();
 							if (value != mineValue)
@@ -75,6 +75,7 @@ public class BoardGame {
 				int x;
 				int y;
 				do {
+
 					x = random.nextInt(height);
 					y = random.nextInt(width);
 				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
@@ -87,6 +88,7 @@ public class BoardGame {
 				int x;
 				int y;
 				do {
+
 					x = random.nextInt(height);
 					y = random.nextInt(width);
 				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getMalus() != MalusType.NONE || board[x][y].getValue() == mineValue
@@ -119,8 +121,8 @@ public class BoardGame {
 
 	private Vector<Square> minesOfTheBoard(){
 		Vector<Square> tabOfMine = new Vector<>();
-		for(int i = 0; i < config.getHeight(); ++i) {
-			for (int j = 0; j < config.getWidth(); ++j) {
+		for(int i = 0; i < config.getWidth(); ++i) {
+			for (int j = 0; j < config.getHeight(); ++j) {
 				if(board[i][j].getValue() == mineValue)
 					tabOfMine.add(board[i][j]);
 			}
@@ -146,6 +148,7 @@ public class BoardGame {
 
 			//if a mine is discovered, the square won't change for the other players so they could fall in it
 			if (board[I][J].getValue() == mineValue) {
+				tabOfSquare.addAll(minesOfTheBoard());
 				return false;
 			}
 
@@ -210,7 +213,7 @@ public class BoardGame {
 		for(int i = 0; i < config.getHeight(); ++i) {
 			String line = "";
 			for(int j = 0; j < config.getWidth(); ++j) {
-				Square s = board[i][j];
+				Square s = board[j][i];
 				if(s.isSwept()){
 					line += "  ";
 				}else if (s.getBonus() != BonusType.NONE){

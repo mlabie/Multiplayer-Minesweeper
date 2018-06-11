@@ -2,6 +2,7 @@ package ch.heigvd.gen.mpms.controller;
 
 import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 
+import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.view.LobbyWindowStyle;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -100,7 +101,11 @@ public class LobbyWindowController {
         for(int iter_slot = Configuration.MIN_SLOT; iter_slot <= Configuration.MAX_SLOT; iter_slot++)
             playerAmountChoices.add(String.valueOf(iter_slot));
 
-        fieldSizeChoices.addAll("Small", "Medium", "Big");
+        fieldSizeChoices.addAll("16" + MinesweeperProtocol.FIELD_SIZE_DELIMITER + "16",
+                "24" + MinesweeperProtocol.FIELD_SIZE_DELIMITER + "16" ,
+                "24" + MinesweeperProtocol.FIELD_SIZE_DELIMITER + "24",
+                "32" + MinesweeperProtocol.FIELD_SIZE_DELIMITER + "24",
+                "48" + MinesweeperProtocol.FIELD_SIZE_DELIMITER + "28");
 
         // adding the Score mode choices to the items table.
         for(Configuration.ScoreMode scoreMode : Configuration.ScoreMode.class.getEnumConstants())
@@ -121,16 +126,23 @@ public class LobbyWindowController {
                         //System.out.println(playerAmountChoices.get(newSelected.intValue()))
         );
 
+
         scoreModeSelect.getSelectionModel().selectedIndexProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
                         this.scoreModeSelected(scoreModeChoices.get(newSelected.intValue()))
+                //System.out.println(scoreModeChoices.get(newSelected.intValue()))
+        );
+
+        fieldSizeSelect.getSelectionModel().selectedIndexProperty().addListener(
+                (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
+                        this.fieldSizeSelected(fieldSizeChoices.get(newSelected.intValue()))
                         //System.out.println(scoreModeChoices.get(newSelected.intValue()))
         );
 
 
         /*mineProportionSlider.valueProperty().addListener(
-                //(ChangeListener<Number>) (observableValue, oldVal, newVal) ->
-                        //this.mineProportionSlided(newVal.intValue())
+                (ChangeListener<Number>) (observableValue, oldVal, newVal) ->
+                        this.mineProportionSlided(newVal.intValue())
                 //System.out.println(scoreModeChoices.get(newVal.intValue()))
         );*/
 
@@ -298,6 +310,17 @@ public class LobbyWindowController {
 
     }
 
+    /**
+     * @brief Set the actual score mode in the scoreMode Choice Box of the Lobby Window.
+     *
+     * @param fieldSize : The score mode. Must be one of the declared Score Mode.
+     */
+    public void setFieldSize(String fieldSize){
+        synchronized (lobbyWindowLock){
+            fieldSizeSelect.setValue(fieldSize);
+        }
+    }
+
 
     /**
      * @brief sets the Bonus/Malus checkbox as checked
@@ -363,6 +386,36 @@ public class LobbyWindowController {
         synchronized (lobbyWindowLock){
             if(isAdmin){
                 mainController.getMineSweeperClient().setScoreMode(scoreMode);
+            }
+        }
+    }
+
+
+    /**
+     * @brief Function called when a choice in the "fieldSizeSelect" choice box is selected. .
+     *        Sends a command to the server to change the Score Mode.
+     *
+     * @param fieldSize
+     */
+    private void fieldSizeSelected(String fieldSize) {
+        String[] size;
+        int width;
+        int height;
+
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+                size = fieldSize.split(MinesweeperProtocol.FIELD_SIZE_DELIMITER);
+                if(size.length != 2){
+                    return;
+                }
+
+                try {
+                    width  = Integer.parseInt(size[0]);
+                    height = Integer.parseInt(size[1]);
+                }catch (NumberFormatException e){
+                    return;
+                }
+                mainController.getMineSweeperClient().setFieldSize(width, height);
             }
         }
     }

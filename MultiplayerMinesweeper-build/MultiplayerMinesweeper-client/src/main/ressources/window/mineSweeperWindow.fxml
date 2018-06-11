@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,16 +12,17 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="950.0" maxWidth="1200.0" minHeight="450.0" minWidth="600.0" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gen.mpms.controller.MineSweeperWindowController">
+<AnchorPane fx:id="mineSweeperAnchorPane" maxHeight="1030.0" maxWidth="1900.0" minHeight="450.0" minWidth="600.0" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ch.heigvd.gen.mpms.controller.MineSweeperWindowController">
     <children>
         <GridPane>
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1200.0" minWidth="600.0" prefWidth="600.0" />
+                <ColumnConstraints fx:id="mineSweeperPaneColumn" hgrow="SOMETIMES" maxWidth="1900.0" minWidth="600.0" prefWidth="600.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="920.0" minHeight="420.0" prefHeight="420.0" vgrow="SOMETIMES" />
+                <RowConstraints fx:id="mineSweeperPaneRow" maxHeight="1000.0" minHeight="420.0" prefHeight="420.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
                 <MenuBar>
@@ -43,11 +46,11 @@
                 </MenuBar>
                 <GridPane GridPane.rowIndex="1">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="1000.0" minWidth="400.0" prefWidth="400.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" />
+                        <ColumnConstraints fx:id="mineFieldPaneColumn" hgrow="SOMETIMES" maxWidth="1600.0" minWidth="400.0" prefWidth="400.0" />
+                        <ColumnConstraints fx:id="managerPaneColumn" hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0" prefWidth="300.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="920.0" minHeight="200.0" prefHeight="420.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="1000.0" minHeight="200.0" prefHeight="420.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                     <children>
                         <GridPane GridPane.columnIndex="1">
@@ -56,30 +59,47 @@
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                                <BorderPane prefHeight="200.0" prefWidth="300.0" GridPane.rowIndex="2">
                                     <center>
-                                        <Button fx:id="quitGameButton" mnemonicParsing="false" text="Quit Game" BorderPane.alignment="CENTER" />
+                                        <Button fx:id="quitGameButton" onAction="#quitGameButtonClicked" mnemonicParsing="false" style="-fx-background-color: #ff9999" text="Quit Game" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Button>
                                     </center>
                                 </BorderPane>
-                                <GridPane>
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    </rowConstraints>
-                                </GridPane>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <center>
+                              <Pane fx:id="scoreTablePane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                  <BorderPane.margin>
+                                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                  </BorderPane.margin>
+                              </Pane>
+                           </center>
+                        </BorderPane>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                           <center>
+                              <Label fx:id="infoLabel" BorderPane.alignment="CENTER_LEFT">
+                                 <BorderPane.margin>
+                                    <Insets left="20.0" />
+                                 </BorderPane.margin>
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </Label>
+                           </center>
+                        </BorderPane>
                             </children>
                         </GridPane>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                      <center>
-                        <Pane fx:id="mineFieldPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                        <Pane fx:id="mineFieldPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                           <BorderPane.margin>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </BorderPane.margin></Pane>
                      </center></BorderPane>
                     </children>
                 </GridPane>

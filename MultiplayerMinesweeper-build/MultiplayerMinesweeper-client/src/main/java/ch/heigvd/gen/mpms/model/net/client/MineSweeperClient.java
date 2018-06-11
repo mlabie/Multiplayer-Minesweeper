@@ -228,6 +228,10 @@ public class MineSweeperClient {
         senderWorker.setPlayerAmount(playerAmount);
     }
 
+    public void setFieldSize(int width, int height){
+        senderWorker.setFieldSize(width, height);
+    }
+
     public void setMineProportion(int proportion){
         senderWorker.setMineProportion(proportion);
     }
@@ -250,5 +254,9 @@ public class MineSweeperClient {
 
     public void sweep(int x, int y){
         senderWorker.sweep(x, y);
+    }
+
+    public void quitGame(){
+        senderWorker.quitGame();
     }
 }

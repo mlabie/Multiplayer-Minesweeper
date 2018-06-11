@@ -229,6 +229,32 @@ public class SenderWorker {
     }
 
 
+
+    /**
+     * @brief Sends a command to server to set the field size
+     *
+     * @param width      : The width of the field
+     * @param height     : The height of the field
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int setFieldSize(int width, int height){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_SET_SIZE + MinesweeperProtocol.DELIMITER + width + MinesweeperProtocol.DELIMITER + height;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+
+
     /**
      * @brief Sends a command to server to set the mine proportion of the game.
      *
@@ -343,6 +369,26 @@ public class SenderWorker {
             return -1;
 
         command = MinesweeperProtocol.CMD_SWEEP + MinesweeperProtocol.DELIMITER + x + MinesweeperProtocol.DELIMITER + y;
+
+        this.print(command);
+
+        return 0;
+    }
+
+
+    /**
+     * @brief Sends a command to server to quit the game.
+     *
+     * @return -1 if the clientSocket was not initialised, or if we are not connected to the server
+     *          0 if the command was sent.
+     */
+    public int quitGame(){
+        String command;
+
+        if(clientSocket == null || !clientSocket.isConnected())
+            return -1;
+
+        command = MinesweeperProtocol.CMD_QUIT_GAME;
 
         this.print(command);
 
