@@ -68,6 +68,6 @@ public class MineSweeperWindowStyle {
 
     /***************         Sizes        ***************/
 
-    public final static int MINEFIELD_ICON_SIZE     = 14;
+    public final static int MINEFIELD_ICON_SIZE     = 12;
 
 }

@@ -8,6 +8,7 @@ import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.view.MineSweeperWindowStyle;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import ch.heigvd.gen.mpms.JsonObjectMapper;
 
@@ -28,6 +29,8 @@ import java.util.logging.Logger;
 public class ReceptionistWorker extends Thread {
 
     final static Logger LOG = Logger.getLogger(ReceptionistWorker.class.getName());
+
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private Socket clientSocket;
     private BufferedReader br;
@@ -398,7 +401,8 @@ public class ReceptionistWorker extends Thread {
                 Platform.runLater(()->{
                     Vector<Square> sweptSquare;
                     try {
-                        sweptSquare = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
+                    	sweptSquare = objectMapper.readValue(parameters, objectMapper.getTypeFactory().constructCollectionType(Vector.class, Square.class));
+                        //sweptSquare = JsonObjectMapper.parseJson(parameters, mapper.getTypeFactory().constructCollectionType(List.class, MyClass.class) );
                         mineSweeperClient.getMainController().getMineSweeperWindowController().refreshGame(sweptSquare);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -451,7 +455,8 @@ public class ReceptionistWorker extends Thread {
                 Platform.runLater(()->{
                     Vector<Square> mines;
                     try {
-                        mines = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
+                    	mines = objectMapper.readValue(parameters, objectMapper.getTypeFactory().constructCollectionType(Vector.class, Square.class));
+                        //mines = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
                         mineSweeperClient.getMainController().getMineSweeperWindowController().showMines(mines);
                     } catch (IOException e) {
                         e.printStackTrace();

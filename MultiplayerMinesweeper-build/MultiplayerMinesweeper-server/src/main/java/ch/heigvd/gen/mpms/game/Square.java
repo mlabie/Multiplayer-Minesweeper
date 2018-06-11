@@ -1,13 +1,43 @@
 package ch.heigvd.gen.mpms.game;
 
-enum BonusType {BONUS1, BONUS2, BONUS3, NONE}
-enum MalusType {MALUS1, MALUS2, MALUS3, NONE}
+import com.google.gson.annotations.SerializedName;
+
 public class Square {
+
+	public enum BonusType {
+		@SerializedName("${BONUS1}")
+		BONUS1,
+		@SerializedName("${BONUS2}")
+		BONUS2,
+		@SerializedName("${BONUS3}")
+		BONUS3,
+		@SerializedName("${NONE}")
+		NONE
+	}
+
+	public enum MalusType {
+		@SerializedName("${MALUS1}")
+		MALUS1,
+		@SerializedName("${MALUS2}")
+		MALUS2,
+		@SerializedName("${MALUS3}")
+		MALUS3,
+		@SerializedName("${NONE}")
+		NONE
+	}
+
+
 	private String playerName;
 	private int value, x, y;
 	private boolean swept;
+
+	@SerializedName("${BonusType}")
 	private BonusType bonus;
+
+	@SerializedName("${MalusType}")
 	private MalusType malus;
+
+	public Square(){}
 
 	public Square(int x, int y){
 		this.x = x;

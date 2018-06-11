@@ -23,7 +23,7 @@ public class BoardGame {
 	private int squareSweptAmount;
 
 
-	public BoardGame(Configuration configuration){
+	public BoardGame(Configuration configuration) {
 		this.config = configuration;
 		bonusMalusEnable = config.isBonus();
 		Random random = new Random();
@@ -33,26 +33,26 @@ public class BoardGame {
 		board = new Square[width][height];
 		size = width * height;
 
-		for (int i = 0; i < width; i++){
-			for (int j = 0; j < height; j++){
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
 				board[i][j] = new Square(i, j);
 			}
 		}
 
 		//repartition of mines into the board
-		for (int i = 0; i < config.getMineProportion() / 100. * size; i++){
+		for (int i = 0; i < config.getMineProportion() / 100. * size; i++) {
 
 			int x;
 			int y;
 			do {
 				x = random.nextInt(width);
 				y = random.nextInt(height);
-			} while(board[x][y].getValue() == mineValue);
+			} while (board[x][y].getValue() == mineValue);
 			board[x][y].setValue(mineValue);
 
 			//update of the adjacent mine's square with their value
 			int I = x, J = y; //current position
-			for(int dirX = -1; dirX <= 1; ++dirX) {
+			for (int dirX = -1; dirX <= 1; ++dirX) {
 				for (int dirY = -1; dirY <= 1; ++dirY) {
 					//exclude the case (0,0)
 					if (dirX != 0 || dirY != 0) {
@@ -69,41 +69,43 @@ public class BoardGame {
 		}
 
 
-		if(bonusMalusEnable) {
+		if (bonusMalusEnable) {
 			//insert the bonus in the board
-			for(int i = 0; i < ratioBonus * size; ++i) {
+			for (int i = 0; i < ratioBonus * size; ++i) {
 				int x;
 				int y;
 				do {
 
 					x = random.nextInt(width);
 					y = random.nextInt(height);
-				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
+				}
+				while (board[x][y].getBonus() != Square.BonusType.NONE || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
 				int bonus = random.nextInt(2);
-				board[x][y].setBonus(BonusType.values()[bonus]);
+				board[x][y].setBonus(Square.BonusType.values()[bonus]);
 			}
 
 			//insert the malus in the board
-			for(int i = 0; i < ratioMalus * size; ++i) {
+			for (int i = 0; i < ratioMalus * size; ++i) {
 				int x;
 				int y;
 				do {
 
 					x = random.nextInt(width);
 					y = random.nextInt(height);
-				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getMalus() != MalusType.NONE || board[x][y].getValue() == mineValue
-						 || board[x][y].getValue() == 0);
+				}
+				while (board[x][y].getBonus() != Square.BonusType.NONE || board[x][y].getMalus() != Square.MalusType.NONE || board[x][y].getValue() == mineValue
+						|| board[x][y].getValue() == 0);
 				int malus = random.nextInt(2);
-				board[x][y].setMalus(MalusType.values()[malus]);
+				board[x][y].setMalus(Square.MalusType.values()[malus]);
 			}
 		}
 
 		//this tab will be sent to the players who died to show them the mines in the GUI
 		tabOfMineOfTheBoard = minesOfTheBoard();
 
-		mineAmount     	   = tabOfMineOfTheBoard.size();
-		squareAmount 	   = width * height;
-		squareSweptAmount  = 0;
+		mineAmount = tabOfMineOfTheBoard.size();
+		squareAmount = width * height;
+		squareSweptAmount = 0;
 
 	}
 
@@ -119,11 +121,11 @@ public class BoardGame {
 		return squareSweptAmount;
 	}
 
-	private Vector<Square> minesOfTheBoard(){
+	private Vector<Square> minesOfTheBoard() {
 		Vector<Square> tabOfMine = new Vector<>();
-		for(int i = 0; i < config.getWidth(); ++i) {
+		for (int i = 0; i < config.getWidth(); ++i) {
 			for (int j = 0; j < config.getHeight(); ++j) {
-				if(board[i][j].getValue() == mineValue)
+				if (board[i][j].getValue() == mineValue)
 					tabOfMine.add(board[i][j]);
 			}
 		}
@@ -143,10 +145,11 @@ public class BoardGame {
 
 	//false : mine, true : ok, if Square already swept, the ArrayList is empty
 	public synchronized boolean sweep(int x, int y, Player player, Vector<Square> tabOfSquare) {
-		if(!board[x][y].isSwept()) {
+		if (!board[x][y].isSwept()) {
 			int I = x, J = y;
 
-			//if a mine is discovered, the square won't change for the other players so they could fall in it
+
+//if a mine is discovered, the square won't change for the other players so they could fall in it
 			if (board[I][J].getValue() == mineValue) {
 				tabOfSquare.addAll(minesOfTheBoard());
 				return false;
@@ -156,29 +159,29 @@ public class BoardGame {
 			board[I][J].setPlayerName(player.getPlayerName());
 
 			//add bonus to score if the square contained a bonus
-			if(board[I][J].getBonus() == BonusType.BONUS1){
+			if (board[I][J].getBonus() == Square.BonusType.BONUS1) {
 				player.addScore(50);
-			}else if (board[I][J].getBonus() == BonusType.BONUS2){
+			} else if (board[I][J].getBonus() == Square.BonusType.BONUS2) {
 				player.addScore(100);
-			}else if(board[I][J].getBonus() == BonusType.BONUS3){
+			} else if (board[I][J].getBonus() == Square.BonusType.BONUS3) {
 				player.addScore(150);
 			}
 
 			//add malus to score if the square contained a malus
-			if(board[I][J].getMalus() == MalusType.MALUS1){
+			if (board[I][J].getMalus() == Square.MalusType.MALUS1) {
 				player.addScore(-40);
-			}else if (board[I][J].getMalus() == MalusType.MALUS1){
+			} else if (board[I][J].getMalus() == Square.MalusType.MALUS1) {
 				player.addScore(-90);
-			}else if(board[I][J].getMalus() == MalusType.MALUS1){
+			} else if (board[I][J].getMalus() == Square.MalusType.MALUS1) {
 				player.addScore(-130);
 			}
 
 			//add score to player according to the playing's mode and the value of the square
-			if(config.getScore().equals(Configuration.ScoreMode.EXPLORER)){
+			if (config.getScore().equals(Configuration.ScoreMode.EXPLORER)) {
 				player.addScore(valueOfIncrScore);
-			}else if (config.getScore().equals(Configuration.ScoreMode.STANDARD)){
+			} else if (config.getScore().equals(Configuration.ScoreMode.STANDARD)) {
 				player.addScore(valueOfIncrScore + board[I][J].getValue() * 100);
-			}else{
+			} else {
 				player.addScore(board[I][J].getValue() * 100);
 			}
 
@@ -194,8 +197,8 @@ public class BoardGame {
 						if (dirX != 0 || dirY != 0) {
 							if (I + dirX >= 0 && I + dirX < config.getWidth() && J + dirY >= 0 && J + dirY <
 									config.getHeight() && !board[I + dirX][J + dirY].isSwept() &&
-									!(board[I + dirX][J + dirY].getMalus() != MalusType.NONE
-											|| board[I + dirX][J + dirY].getBonus() != BonusType.NONE)) {
+									!(board[I + dirX][J + dirY].getMalus() != Square.MalusType.NONE
+											|| board[I + dirX][J + dirY].getBonus() != Square.BonusType.NONE)) {
 								sweep(I + dirX, J + dirY, player, tabOfSquare);
 							}
 						}
@@ -210,17 +213,17 @@ public class BoardGame {
 	public String toString() {
 		//show the boardGame to the console
 		String game = "";
-		for(int i = 0; i < config.getHeight(); ++i) {
+		for (int i = 0; i < config.getHeight(); ++i) {
 			String line = "";
-			for(int j = 0; j < config.getWidth(); ++j) {
+			for (int j = 0; j < config.getWidth(); ++j) {
 				Square s = board[j][i];
-				if(s.isSwept()){
+				if (s.isSwept()) {
 					line += "  ";
-				}else if (s.getBonus() != BonusType.NONE){
+				} else if (s.getBonus() != Square.BonusType.NONE) {
 					line += "B ";
-				}else if (s.getMalus() != MalusType.NONE){
+				} else if (s.getMalus() != Square.MalusType.NONE) {
 					line += "M ";
-				}else {
+				} else {
 					line += s.getValue() == mineValue ? "* " : s.getValue() + " ";
 				}
 			}

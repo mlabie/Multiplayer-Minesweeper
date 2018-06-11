@@ -28,7 +28,7 @@ public class JsonObjectMapper {
    * @throws IOException
    */
   public static <T> T parseJson(String json, TypeReference<Vector<Square>> type) throws IOException {
-    return objectMapper.readValue(json, type);
+	  return objectMapper.readValue(json, type);
   }
 
   /**
