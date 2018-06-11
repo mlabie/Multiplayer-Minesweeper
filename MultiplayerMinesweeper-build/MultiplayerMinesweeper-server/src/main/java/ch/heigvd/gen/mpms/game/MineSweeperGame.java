@@ -150,6 +150,17 @@ public class MineSweeperGame {
         isAlive     = boardGame.sweep(x,y,player,sweptSquare);
 
         if(!isAlive){
+
+            try {
+                // Show the player who died the location of the mines.
+                answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_MINES_ARE +
+                         MinesweeperProtocol.REPLY_PARAM_DELIMITER + JsonObjectMapper.toJson(sweptSquare);
+
+                player.getClient().print(answer);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
             answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_PLAYER_DIED +
                      MinesweeperProtocol.REPLY_PARAM_DELIMITER + player.getPlayerName();
             player.kill();
@@ -167,12 +178,21 @@ public class MineSweeperGame {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+
+            sendAllPlayer(answer);
+
+            // Send the new players score.
+            answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_PLAYER_SCORE +
+                     MinesweeperProtocol.REPLY_PARAM_DELIMITER + player.getPlayerName() + MinesweeperProtocol.DELIMITER +
+                     player.getScore();
+
+            sendAllPlayer(answer);
         }
 
         gameFinished = isGameFinished();
 
         LOG.log(Level.INFO, "\n" + boardGame.toString());
-        sendAllPlayer(answer);
+
 
         // if the game is finisehd, send to all the player who's the winner.
         if(gameFinished){

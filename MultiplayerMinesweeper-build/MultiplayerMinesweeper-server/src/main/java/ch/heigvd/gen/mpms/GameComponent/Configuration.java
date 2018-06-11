@@ -18,8 +18,8 @@ public class Configuration {
         public int getValue() { return difficulty; }
     }
 
-    public static final int MAX_WIDTH   =  32;
-    public static final int MAX_HEIGHT  =  24;
+    public static final int MAX_WIDTH   =  48;
+    public static final int MAX_HEIGHT  =  28;
 
     public static final int MIN_WIDTH   =  16;
     public static final int MIN_HEIGHT  =  16;
