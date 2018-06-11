@@ -76,8 +76,8 @@ public class BoardGame {
 				int y;
 				do {
 
-					x = random.nextInt(height);
-					y = random.nextInt(width);
+					x = random.nextInt(width);
+					y = random.nextInt(height);
 				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
 				int bonus = random.nextInt(2);
 				board[x][y].setBonus(BonusType.values()[bonus]);
@@ -89,8 +89,8 @@ public class BoardGame {
 				int y;
 				do {
 
-					x = random.nextInt(height);
-					y = random.nextInt(width);
+					x = random.nextInt(width);
+					y = random.nextInt(height);
 				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getMalus() != MalusType.NONE || board[x][y].getValue() == mineValue
 						 || board[x][y].getValue() == 0);
 				int malus = random.nextInt(2);
@@ -192,8 +192,8 @@ public class BoardGame {
 					for (int dirY = -1; dirY <= 1; ++dirY) {
 						//exclude the case (0,0) and bonus/malus
 						if (dirX != 0 || dirY != 0) {
-							if (I + dirX >= 0 && I + dirX < config.getHeight() && J + dirY >= 0 && J + dirY <
-									config.getWidth() && !board[I + dirX][J + dirY].isSwept() &&
+							if (I + dirX >= 0 && I + dirX < config.getWidth() && J + dirY >= 0 && J + dirY <
+									config.getHeight() && !board[I + dirX][J + dirY].isSwept() &&
 									!(board[I + dirX][J + dirY].getMalus() != MalusType.NONE
 											|| board[I + dirX][J + dirY].getBonus() != BonusType.NONE)) {
 								sweep(I + dirX, J + dirY, player, tabOfSquare);
