@@ -163,9 +163,13 @@ public class MineSweeperGame {
 
             answer = MinesweeperProtocol.STATUS_350 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_PLAYER_DIED +
                      MinesweeperProtocol.REPLY_PARAM_DELIMITER + player.getPlayerName();
+
             player.kill();
             playerDead++;
             playerAlive--;
+
+            sendAllPlayer(answer);
+
         }else if(sweptSquare.isEmpty()){
             answer = MinesweeperProtocol.STATUS_650 + MinesweeperProtocol.DELIMITER + MinesweeperProtocol.REPLY_SQUARE_ALREADY_SWEPT;
             player.getClient().print(answer);
@@ -188,6 +192,8 @@ public class MineSweeperGame {
 
             sendAllPlayer(answer);
         }
+
+
 
         gameFinished = isGameFinished();
 
