@@ -2,11 +2,10 @@ package ch.heigvd.gen.mpms.game;
 
 import ch.heigvd.gen.mpms.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.GameComponent.Player;
-import ch.heigvd.gen.mpms.JsonObjectMapper;
+import ch.heigvd.gen.mpms.model.net.server.JsonObjectMapper;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.model.net.server.ServantWorker;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.Vector;

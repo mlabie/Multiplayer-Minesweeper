@@ -1,15 +1,19 @@
 package ch.heigvd.gen.mpms.game;
 
+enum BonusType {BONUS1, BONUS2, BONUS3, NONE}
+enum MalusType {MALUS1, MALUS2, MALUS3, NONE}
 public class Square {
 	private String playerName;
 	private int value, x, y;
 	private boolean swept;
-	private boolean bonus;
-	private boolean malus;
+	private BonusType bonus;
+	private MalusType malus;
 
 	public Square(int x, int y){
 		this.x = x;
 		this.y = y;
+		bonus = BonusType.NONE;
+		malus = MalusType.NONE;
 	}
 
 	public int getX() {
@@ -47,21 +51,19 @@ public class Square {
 		return swept;
 	}
 
-
-	public void setBonus(boolean bonus) {
-		this.bonus = bonus;
-	}
-
-	public boolean isBonus() {
+	public BonusType getBonus() {
 		return bonus;
 	}
 
-
-	public void setMalus(boolean malus) {
-		this.malus = malus;
+	public void setBonus(BonusType bonus) {
+		this.bonus = bonus;
 	}
 
-	public boolean isMalus() {
+	public MalusType getMalus() {
 		return malus;
+	}
+
+	public void setMalus(MalusType malus) {
+		this.malus = malus;
 	}
 }

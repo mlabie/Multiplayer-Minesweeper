@@ -6,6 +6,7 @@ import ch.heigvd.gen.mpms.GameComponent.Player;
 import java.util.Random;
 import java.util.Vector;
 
+
 public class BoardGame {
 	private Square[][] board;
 	private Vector<Square> tabOfMineOfTheBoard;
@@ -20,7 +21,6 @@ public class BoardGame {
 	private int mineAmount;
 	private int squareAmount;
 	private int squareSweptAmount;
-
 
 
 	public BoardGame(Configuration configuration){
@@ -75,10 +75,12 @@ public class BoardGame {
 				int x;
 				int y;
 				do {
+
 					x = random.nextInt(width);
 					y = random.nextInt(height);
-				} while (board[x][y].isBonus() || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
-				board[x][y].setBonus(true);
+				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getValue() == mineValue || board[x][y].getValue() == 0);
+				int bonus = random.nextInt(2);
+				board[x][y].setBonus(BonusType.values()[bonus]);
 			}
 
 			//insert the malus in the board
@@ -86,11 +88,13 @@ public class BoardGame {
 				int x;
 				int y;
 				do {
+
 					x = random.nextInt(width);
 					y = random.nextInt(height);
-				} while (board[x][y].isBonus() || board[x][y].isMalus() || board[x][y].getValue() == mineValue
+				} while (board[x][y].getBonus() != BonusType.NONE || board[x][y].getMalus() != MalusType.NONE || board[x][y].getValue() == mineValue
 						 || board[x][y].getValue() == 0);
-				board[x][y].setMalus(true);
+				int malus = random.nextInt(2);
+				board[x][y].setMalus(MalusType.values()[malus]);
 			}
 		}
 
@@ -151,6 +155,25 @@ public class BoardGame {
 			board[I][J].setSwept(true);
 			board[I][J].setPlayerName(player.getPlayerName());
 
+			//add bonus to score if the square contained a bonus
+			if(board[I][J].getBonus() == BonusType.BONUS1){
+				player.addScore(50);
+			}else if (board[I][J].getBonus() == BonusType.BONUS2){
+				player.addScore(100);
+			}else if(board[I][J].getBonus() == BonusType.BONUS3){
+				player.addScore(150);
+			}
+
+			//add malus to score if the square contained a malus
+			if(board[I][J].getMalus() == MalusType.MALUS1){
+				player.addScore(-40);
+			}else if (board[I][J].getMalus() == MalusType.MALUS1){
+				player.addScore(-90);
+			}else if(board[I][J].getMalus() == MalusType.MALUS1){
+				player.addScore(-130);
+			}
+
+			//add score to player according to the playing's mode and the value of the square
 			if(config.getScore().equals(Configuration.ScoreMode.EXPLORER)){
 				player.addScore(valueOfIncrScore);
 			}else if (config.getScore().equals(Configuration.ScoreMode.STANDARD)){
@@ -167,11 +190,12 @@ public class BoardGame {
 			if (board[I][J].getValue() == 0) {
 				for (int dirX = -1; dirX <= 1; ++dirX) {
 					for (int dirY = -1; dirY <= 1; ++dirY) {
-						//exclude the case (0,0)
+						//exclude the case (0,0) and bonus/malus
 						if (dirX != 0 || dirY != 0) {
 							if (I + dirX >= 0 && I + dirX < config.getWidth() && J + dirY >= 0 && J + dirY <
 									config.getHeight() && !board[I + dirX][J + dirY].isSwept() &&
-									!(board[I + dirX][J + dirY].isMalus() || board[I + dirX][J + dirY].isBonus())) {
+									!(board[I + dirX][J + dirY].getMalus() != MalusType.NONE
+											|| board[I + dirX][J + dirY].getBonus() != BonusType.NONE)) {
 								sweep(I + dirX, J + dirY, player, tabOfSquare);
 							}
 						}
@@ -182,8 +206,9 @@ public class BoardGame {
 		return true;
 	}
 
-	
+
 	public String toString() {
+		//show the boardGame to the console
 		String game = "";
 		for(int i = 0; i < config.getHeight(); ++i) {
 			String line = "";
@@ -191,9 +216,9 @@ public class BoardGame {
 				Square s = board[j][i];
 				if(s.isSwept()){
 					line += "  ";
-				}else if (s.isBonus()){
+				}else if (s.getBonus() != BonusType.NONE){
 					line += "B ";
-				}else if (s.isMalus()){
+				}else if (s.getMalus() != MalusType.NONE){
 					line += "M ";
 				}else {
 					line += s.getValue() == mineValue ? "* " : s.getValue() + " ";
