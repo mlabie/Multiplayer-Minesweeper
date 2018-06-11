@@ -160,6 +160,15 @@ public class MineSweeperWindowController {
         }
     }
 
+    public void setDead(Player player){
+
+        Label state = (Label)scoresTable.lookup("#" + player.getPlayerName() + "State");
+
+        if(state != null){
+            state.setGraphic(new ImageView(mineImage));
+        }
+    }
+
     public void setField(int width, int height) {
 
         int newAnchorWidth;

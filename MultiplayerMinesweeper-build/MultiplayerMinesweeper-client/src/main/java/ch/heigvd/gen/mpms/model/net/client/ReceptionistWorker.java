@@ -443,7 +443,9 @@ public class ReceptionistWorker extends Thread {
 
 
             case  MinesweeperProtocol.REPLY_PLAYER_DIED:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setDead(mineSweeperClient.getMineSweeperGame().getPlayer(parameters));
+                });
                 break;
 
 
