@@ -4,18 +4,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javafx.geometry.Insets;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
 public class MineSweeperWindowStyle {
 
-    private static Background b1 = new Background(new BackgroundFill(Color.SKYBLUE, CornerRadii.EMPTY, Insets.EMPTY));
-    private static Background b2 = new Background(new BackgroundFill(Color.LIGHTGREEN, CornerRadii.EMPTY, Insets.EMPTY));
-    private static Background b3 = new Background(new BackgroundFill(Color.LIGHTSALMON, CornerRadii.EMPTY, Insets.EMPTY));
-    private static Background b4 = new Background(new BackgroundFill(Color.KHAKI, CornerRadii.EMPTY, Insets.EMPTY));
+    /**********        MineField Border        **********/
+
+    public final static Border MINEFIELD_BORDER = new Border(new BorderStroke(Color.DIMGRAY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+
+
+    /**********        Button Background       **********/
+
+    private final static CornerRadii BUTTON_CORNER = new CornerRadii(2);
+
+    public final static Background BUTTON_BACKGROUND       = new Background(new BackgroundFill(Color.DIMGRAY, BUTTON_CORNER, Insets.EMPTY));
+    public final static Background BUTTON_HOVER_BACKGROUND = new Background(new BackgroundFill(Color.DARKGRAY, BUTTON_CORNER, Insets.EMPTY));
+
+
+
+    /**********        Player Background       **********/
+
+    private static Background b1 = new Background(new BackgroundFill(Color.SKYBLUE, BUTTON_CORNER, Insets.EMPTY));
+    private static Background b2 = new Background(new BackgroundFill(Color.LIGHTGREEN, BUTTON_CORNER, Insets.EMPTY));
+    private static Background b3 = new Background(new BackgroundFill(Color.LIGHTSALMON, BUTTON_CORNER, Insets.EMPTY));
+    private static Background b4 = new Background(new BackgroundFill(Color.KHAKI, BUTTON_CORNER, Insets.EMPTY));
+
+
+
 
     /***************        Colours       ***************/
 
@@ -40,5 +57,17 @@ public class MineSweeperWindowStyle {
         PLAYER_COLOUR.put(4, b4);
     }
 
+
+    /***************         Texts        ***************/
+
+    public final static String INFO_DEFAULT         = "";
+
+    public final static String INFO_WINNER          = "Winner is ";
+
+
+
+    /***************         Sizes        ***************/
+
+    public final static int MINEFIELD_ICON_SIZE     = 14;
 
 }

@@ -20,6 +20,7 @@ public class MinesweeperProtocol {
     public final static String DELIMITER               = " ";
     public final static String REPLY_PARAM_DELIMITER   = " : ";
     public final static String MULTIPLE_DELIMITER      = "\\b" + DELIMITER + "+";
+    public final static String FIELD_SIZE_DELIMITER    = "X";
 
 
     // - - - - - - - - - - -          Status          - - - - - - - - - - - //
@@ -131,6 +132,7 @@ public class MinesweeperProtocol {
     public final static String REPLY_BONUS_MALUS_DISABLED        = "BONUS-MALUS DISABLED";
     public final static String REPLY_GAME_STARTED                = "GAME STARTED";
     public final static String REPLY_SQUARE_ALREADY_SWEPT        = "SQUARE ALREADY SWEPT";
+    public final static String REPLY_GAME_IS_FINISHED            = "GAME IS FINISHED";
     public final static String REPLY_YOU_HAVE_ALREADY_LOST       = "YOU HAVE ALREADY LOST";
     public final static String REPLY_SQUARE_NOT_FOUND            = "SQUARE NOT FOUND";
     public final static String REPLY_SQUARE_SWEPT                = "SQUARE SWEPT";
@@ -138,10 +140,15 @@ public class MinesweeperProtocol {
     public final static String REPLY_NOT_IN_A_GAME               = "NOT IN A GAME";
     public final static String REPLY_PLAYER_LEFT                 = "PLAYER LEFT";
     public final static String REPLY_PLAYER_DIED                 = "PLAYER DIED";
+    public final static String REPLY_MINES_ARE                   = "MINES ARE";
+    public final static String REPLY_YOU_ARE_DEAD                = "YOU ARE DEAD";
+    public final static String REPLY_GAME_LEFT                   = "GAME LEFT";
     public final static String REPLY_GAME_FINISHED               = "GAME FINISHED";
     public final static String REPLY_ALREADY_IN_A_GAME           = "ALREADY IN A GAME";
     public final static String REPLY_NOT_ENOUGH_PLAYER           = "NOT ENOUGH PLAYER";
     public final static String REPLY_UNKNOWN_COMMAND             = "UNKNOWN COMMAND";
     public final static String REPLY_TOO_MANY_ARGUMENTS          = "TOO MANY ARGUMENTS";
     public final static String REPLY_NOT_ENOUGH_ARGUMENTS        = "NOT ENOUGH ARGUMENTS";
+
 }
+

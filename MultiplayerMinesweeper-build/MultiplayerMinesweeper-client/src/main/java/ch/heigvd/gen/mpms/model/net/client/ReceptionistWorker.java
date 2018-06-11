@@ -6,6 +6,7 @@ import ch.heigvd.gen.mpms.model.GameComponent.Player;
 import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
+import ch.heigvd.gen.mpms.view.MineSweeperWindowStyle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import javafx.application.Platform;
 import ch.heigvd.gen.mpms.JsonObjectMapper;
@@ -241,6 +242,16 @@ public class ReceptionistWorker extends Thread {
                 });
                 break;
 
+            case  MinesweeperProtocol.REPLY_GAME_LEFT:
+                // Change the UI Window to lobby window.
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getWindowController().activate(WindowController.MAIN_WINDOW);
+                    //mineSweeperClient.getMainController().getLobbyWindowController().cleanUp();
+                    mineSweeperClient.setMineSweeperGame(null);
+                    mineSweeperClient.disconnect();
+                });
+                break;
+
 
             default:
                 LOG.log(Level.INFO, "Unhandled confirmation message.");
@@ -326,7 +337,30 @@ public class ReceptionistWorker extends Thread {
 
 
             case  MinesweeperProtocol.REPLY_SIZE_IS:
-                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                Platform.runLater(()->{
+                    int width;
+                    int height;
+                    String size[];
+
+                    size = parameters.split(MinesweeperProtocol.FIELD_SIZE_DELIMITER);
+
+
+                    if(size.length != 2)
+                        return;
+
+                    try {
+                        width  = Integer.parseInt(size[0]);
+                        height = Integer.parseInt(size[1]);
+
+                        mineSweeperClient.getLobby().getConfig().setWidth(width);
+                        mineSweeperClient.getLobby().getConfig().setHeight(height);
+
+                        mineSweeperClient.getMainController().getLobbyWindowController().setFieldSize(parameters);
+                    }catch (NumberFormatException e){
+                        e.printStackTrace();
+                    }
+
+                });
                 break;
 
 
@@ -350,8 +384,12 @@ public class ReceptionistWorker extends Thread {
                             mineSweeperClient.getLobby().getConfig().getWidth(),mineSweeperClient.getLobby().getConfig().getHeight());
 
                     mineSweeperClient.setMineSweeperGame(new MineSweeperGame(mineSweeperClient.getLobby().getPlayers()));
+                    mineSweeperClient.getMainController().getLobbyWindowController().cleanUp();
                     mineSweeperClient.setLobby(null);
 
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setInfoLabel(MineSweeperWindowStyle.INFO_DEFAULT);
+
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setPlayer(mineSweeperClient.getMineSweeperGame().getPlayers());
                     mineSweeperClient.getMainController().getWindowController().activate(WindowController.MINESWEEPER_WINDOW);
                 });
                 break;
@@ -365,6 +403,66 @@ public class ReceptionistWorker extends Thread {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                });
+                break;
+
+
+            case  MinesweeperProtocol.REPLY_PLAYER_SCORE:
+                Platform.runLater(()->{
+                    Player   player;
+                    int      score;
+                    String[] param;
+
+                    param = parameters.split(MinesweeperProtocol.DELIMITER);
+
+                    if(param.length != 2)
+                        return;
+
+                    player = mineSweeperClient.getMineSweeperGame().getPlayer(param[0]);
+
+                    if(player == null)
+                        return;
+
+                    try {
+                        score = Integer.parseInt(param[1]);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        return;
+                    }
+
+                    player.setScore(score);
+
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setScore(player);
+                });
+                break;
+
+
+            case  MinesweeperProtocol.REPLY_PLAYER_LEFT:
+                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                break;
+
+
+            case  MinesweeperProtocol.REPLY_PLAYER_DIED:
+                LOG.log(Level.INFO, "Unhandled command answer yet.");
+                break;
+
+
+            case  MinesweeperProtocol.REPLY_MINES_ARE:
+                Platform.runLater(()->{
+                    Vector<Square> mines;
+                    try {
+                        mines = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
+                        mineSweeperClient.getMainController().getMineSweeperWindowController().showMines(mines);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                break;
+
+
+            case  MinesweeperProtocol.REPLY_GAME_FINISHED:
+                Platform.runLater(()->{
+                    mineSweeperClient.getMainController().getMineSweeperWindowController().setInfoLabel(MineSweeperWindowStyle.INFO_WINNER + parameters);
                 });
                 break;
 

@@ -10,6 +10,7 @@ public class MineSweeperGame {
     private ArrayList<Player> players;
 
     public MineSweeperGame(ArrayList<Player> players){
+        Player.playerNumber = 0;
         this.players = players;
     }
 
