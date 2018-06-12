@@ -35,7 +35,7 @@ public class MineSweeperWindowController {
 
 
     private final static int PLAYER_NAME_LABEL_WIDTH  = 110;
-    private final static int PLAYER_STATE_LABEL_WIDTH = 30;
+    private final static int PLAYER_STATE_LABEL_WIDTH = 50;
     private final static int PLAYER_SCORE_LABEL_WIDTH = 80;
     private final static int SCORE_TABLE_ROW_HEIGTH   = 40;
 
