@@ -8,6 +8,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
+
+/**
+ * @brief
+ *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
+ */
 public class MineSweeperWindowStyle {
 
     /**********        MineField Border        **********/

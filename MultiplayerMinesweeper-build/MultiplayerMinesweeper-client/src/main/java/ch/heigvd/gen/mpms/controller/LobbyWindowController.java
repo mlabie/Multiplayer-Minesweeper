@@ -8,8 +8,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+
+import java.io.IOException;
 
 
 /**
@@ -71,6 +81,13 @@ public class LobbyWindowController {
 
     @FXML
     private Button startGameButton;
+
+    @FXML
+    private Menu fileMenu;
+
+
+    @FXML
+    private MenuItem saveConfigMenuItem;
 
 
 
@@ -140,11 +157,17 @@ public class LobbyWindowController {
         );
 
 
-        /*mineProportionSlider.valueProperty().addListener(
+        mineProportionSlider.valueProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldVal, newVal) ->
+                        //mineProportionSlider.setValue(newVal.intValue())
                         this.mineProportionSlided(newVal.intValue())
                 //System.out.println(scoreModeChoices.get(newVal.intValue()))
-        );*/
+        );
+
+
+        /*mineProportionSlider.setOnDragDone(dragEvent -> {
+            this.mineProportionSlided((int)mineProportionSlider.getValue());
+        });*/
 
         isAdmin = false;
 
@@ -168,6 +191,11 @@ public class LobbyWindowController {
         expelLobbyButton.setDisable(false);
         startGameButton.setDisable(false);
 
+        for(MenuItem item : fileMenu.getItems())
+            if(item.equals(saveConfigMenuItem))
+                item.setVisible(true);
+
+
         isAdmin = true;
     }
 
@@ -186,6 +214,10 @@ public class LobbyWindowController {
         bonusMalusCheckbox.setDisable(true);
         expelLobbyButton.setDisable(true);
         startGameButton.setDisable(true);
+
+        for(MenuItem item : fileMenu.getItems())
+            if(item.equals(saveConfigMenuItem))
+                item.setVisible(false);
 
         isAdmin = false;
     }
@@ -288,11 +320,14 @@ public class LobbyWindowController {
      *                     and greater than Configuration.PROPORTION_MAX
      */
     public void setMineProportion(int proportion){
+        synchronized (lobbyWindowLock){
+            if(!isAdmin){
+                if(proportion < Configuration.PROPORTION_MIN || proportion > Configuration.PROPORTION_MAX)
+                    return;
 
-        if(proportion < Configuration.PROPORTION_MIN || proportion > Configuration.PROPORTION_MAX)
-            return;
-
-        mineProportionSlider.setValue((double)proportion);
+                mineProportionSlider.setValue(proportion);
+            }
+        }
     }
 
 
@@ -301,13 +336,8 @@ public class LobbyWindowController {
      *
      * @param scoreMode : The score mode. Must be one of the declared Score Mode.
      */
-    public void setScoreMode(String scoreMode){
-
-        // Sets the values only if the score mode exists.
-        for(Configuration.ScoreMode sm : Configuration.ScoreMode.class.getEnumConstants())
-            if(sm.toString().equals(scoreMode))
-                scoreModeSelect.setValue(scoreMode);
-
+    public void setScoreMode(Configuration.ScoreMode scoreMode){
+        scoreModeSelect.setValue(scoreMode.toString());
     }
 
     /**
@@ -447,7 +477,10 @@ public class LobbyWindowController {
     private void mineProportionSlided(int proportion) {
         synchronized (lobbyWindowLock){
             if(isAdmin){
-                mainController.getMineSweeperClient().setMineProportion(proportion);
+                if(mainController.getMineSweeperClient().getLobby().getConfig().getMineProportion() != proportion){
+                    mineProportionSlider.setValue(proportion);
+                    mainController.getMineSweeperClient().setMineProportion(proportion);
+                }
             }
         }
     }
@@ -480,6 +513,74 @@ public class LobbyWindowController {
             }
         }
     }
+
+
+    /**
+     * @brief When the admin click on the Save Config item on the File menu,
+     *        launch a popup window in which the user will be asked to give
+     *        a configuration name, and saves the actual lobby configuration
+     *        in the Json config file.
+     *
+     * @param actionEvent
+     */
+    public void saveConfigItemClicked(ActionEvent actionEvent){
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+
+                FXMLLoader loader;
+                Parent     parent;
+
+                Stage popupStage;
+                Scene popupScene;
+
+                String configurationName;
+
+                //ConfigurationPopUpController configurationPopUpController;
+
+                try {
+
+
+                    popupScene = new Scene(new VBox());
+                    popupStage = new Stage();
+
+                    loader    = new FXMLLoader(getClass().getResource( "/window/configNamePopup.fxml"));
+                    parent    = loader.load();
+
+                    popupStage.setTitle("Save Configuration");
+
+                    popupScene.setRoot(parent);
+
+
+                    popupStage.setScene(popupScene);
+
+                    popupStage.initModality(Modality.APPLICATION_MODAL);
+                    popupStage.showAndWait();
+
+                    if(ConfigurationPopUpController.save_clicked){
+                        configurationName = ConfigurationPopUpController.configurationName;
+                        System.out.println(configurationName);
+
+                        ConfigurationPopUpController.save_clicked = false;
+                    }
+
+
+                    popupStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent event){
+                            ConfigurationPopUpController.save_clicked = false;
+                            popupStage.close();
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+
 
     /**
      * Clears the lobby window.

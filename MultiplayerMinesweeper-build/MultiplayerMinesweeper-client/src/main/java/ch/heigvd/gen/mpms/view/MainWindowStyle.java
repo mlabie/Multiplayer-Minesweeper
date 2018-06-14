@@ -1,5 +1,12 @@
 package ch.heigvd.gen.mpms.view;
 
+
+
+/**
+ * @brief
+ *
+ * @author Corentin Basler, Antonio Cusanelli, Marc Labie, Simon Jobin
+ */
 public interface MainWindowStyle {
 
     /***************         Texts        ***************/

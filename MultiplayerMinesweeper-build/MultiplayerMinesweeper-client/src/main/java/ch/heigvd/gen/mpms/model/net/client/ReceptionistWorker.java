@@ -2,6 +2,7 @@ package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.WindowController;
 import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
+import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.model.GameComponent.Player;
 import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
@@ -267,6 +268,7 @@ public class ReceptionistWorker extends Thread {
 
     private int informationManager(String message, String parameters){
 
+
         switch (message){
 
             case  MinesweeperProtocol.REPLY_LOBBY_OPENED:
@@ -311,8 +313,11 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_MINE_PROPORTION_IS:
                 Platform.runLater(()->{
+                    int mine_proportion;
                     try {
-                        mineSweeperClient.getMainController().getLobbyWindowController().setMineProportion(Integer.parseInt(parameters));
+                        mine_proportion = Integer.parseInt(parameters);
+                        mineSweeperClient.getLobby().getConfig().setMineProportion(mine_proportion);
+                        mineSweeperClient.getMainController().getLobbyWindowController().setMineProportion(mine_proportion);
                     }catch (NumberFormatException e){
                         LOG.log(Level.SEVERE, e.getMessage(), e);
                     }
@@ -322,8 +327,11 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_PLAYER_AMOUNT_IS:
                 Platform.runLater(()->{
+                    int player_amount;
                     try {
-                        mineSweeperClient.getMainController().getLobbyWindowController().setPlayerAmount(Integer.parseInt(parameters));
+                        player_amount = Integer.parseInt(parameters);
+                        mineSweeperClient.getLobby().getConfig().setNbrSlot(player_amount);
+                        mineSweeperClient.getMainController().getLobbyWindowController().setPlayerAmount(player_amount);
                     }catch (NumberFormatException e){
                         LOG.log(Level.SEVERE, e.getMessage(), e);
                     }
@@ -334,7 +342,13 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_SCORE_MODE_IS:
                 Platform.runLater(()->{
-                    mineSweeperClient.getMainController().getLobbyWindowController().setScoreMode(parameters);
+
+                    for(Configuration.ScoreMode sm : Configuration.ScoreMode.class.getEnumConstants()){
+                        if(sm.toString().equals(parameters)) {
+                            mineSweeperClient.getLobby().getConfig().setScore(sm);
+                            mineSweeperClient.getMainController().getLobbyWindowController().setScoreMode(sm);
+                        }
+                    }
                 });
                 break;
 
@@ -369,6 +383,8 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_BONUS_MALUS_ENABLED:
                 Platform.runLater(()->{
+                    mineSweeperClient.getLobby().getConfig().setBonus(true);
+                    mineSweeperClient.getLobby().getConfig().setMalus(true);
                     mineSweeperClient.getMainController().getLobbyWindowController().enableBonusMalusCheckbox();
                 });
                 break;
@@ -376,6 +392,8 @@ public class ReceptionistWorker extends Thread {
 
             case  MinesweeperProtocol.REPLY_BONUS_MALUS_DISABLED:
                 Platform.runLater(()->{
+                    mineSweeperClient.getLobby().getConfig().setBonus(false);
+                    mineSweeperClient.getLobby().getConfig().setMalus(false);
                     mineSweeperClient.getMainController().getLobbyWindowController().disableBonusMalusCheckbox();
                 });
                 break;
