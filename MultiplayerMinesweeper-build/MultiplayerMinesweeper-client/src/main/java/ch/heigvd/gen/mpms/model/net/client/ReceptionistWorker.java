@@ -5,13 +5,11 @@ import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
 import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.model.GameComponent.Player;
 import ch.heigvd.gen.mpms.model.GameComponent.Square;
-import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.view.MineSweeperWindowStyle;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
-import ch.heigvd.gen.mpms.JsonObjectMapper;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -420,7 +418,6 @@ public class ReceptionistWorker extends Thread {
                     Vector<Square> sweptSquare;
                     try {
                     	sweptSquare = objectMapper.readValue(parameters, objectMapper.getTypeFactory().constructCollectionType(Vector.class, Square.class));
-                        //sweptSquare = JsonObjectMapper.parseJson(parameters, mapper.getTypeFactory().constructCollectionType(List.class, MyClass.class) );
                         mineSweeperClient.getMainController().getMineSweeperWindowController().refreshGame(sweptSquare);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -476,8 +473,7 @@ public class ReceptionistWorker extends Thread {
                     Vector<Square> mines;
                     try {
                     	mines = objectMapper.readValue(parameters, objectMapper.getTypeFactory().constructCollectionType(Vector.class, Square.class));
-                        //mines = JsonObjectMapper.parseJson(parameters, new TypeReference<Vector<Square>>() {});
-                        mineSweeperClient.getMainController().getMineSweeperWindowController().showMines(mines);
+                    	mineSweeperClient.getMainController().getMineSweeperWindowController().showMines(mines);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

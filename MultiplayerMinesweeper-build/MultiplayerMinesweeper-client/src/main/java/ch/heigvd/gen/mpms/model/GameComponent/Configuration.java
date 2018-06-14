@@ -41,6 +41,17 @@ public class Configuration {
     private int        height;
 
 
+	public Configuration(){
+		this.name           = "";
+		this.score          = ScoreMode.STANDARD;
+		this.nbrSlot        = MAX_SLOT;
+		this.mineProportion = Difficulty.MEDIUM.getValue();
+		this.bonus          = false;
+		this.malus          = false;
+		this.width          = 16;
+		this.height         = 16;
+	}
+
     public Configuration(String name){
         this.name           = name;
         this.score          = ScoreMode.STANDARD;
