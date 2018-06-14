@@ -2,6 +2,8 @@ package ch.heigvd.gen.mpms;
 
 import ch.heigvd.gen.mpms.controller.*;
 
+import ch.heigvd.gen.mpms.file.ConfigurationFileJson;
+import ch.heigvd.gen.mpms.model.GameComponent.Configuration;
 import ch.heigvd.gen.mpms.model.GameComponent.Player;
 import ch.heigvd.gen.mpms.model.GameComponent.Square;
 import ch.heigvd.gen.mpms.model.net.client.MineSweeperClient;
@@ -113,6 +115,6 @@ public class Launcher extends Application{
     }
 
     public static void main(String args[]){
-        launch(args);
+    	launch(args);
     }
 }
