@@ -1,0 +1,4 @@
+{"name":"pouet","score":"STANDARD","nbrSlot":4,"mineProportion":15,"bonus":false,"malus":false,"width":16,"height":16}
+{"name":"Kette","score":"HARDSWEEPER","nbrSlot":2,"mineProportion":20,"bonus":false,"malus":false,"width":32,"height":24}
+{"name":"wesh","score":"HARDSWEEPER","nbrSlot":2,"mineProportion":8,"bonus":true,"malus":true,"width":48,"height":28}
+{"name":"TOPKEK","score":"EXPLORER","nbrSlot":3,"mineProportion":8,"bonus":true,"malus":true,"width":48,"height":28}

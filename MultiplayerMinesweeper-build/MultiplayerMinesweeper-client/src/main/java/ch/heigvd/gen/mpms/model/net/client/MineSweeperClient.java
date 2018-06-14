@@ -1,6 +1,7 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
 import ch.heigvd.gen.mpms.controller.*;
+import ch.heigvd.gen.mpms.file.ConfigurationFileJson;
 import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 
@@ -27,6 +28,8 @@ public class MineSweeperClient {
     private Lobby              lobby;
     private MineSweeperGame    mineSweeperGame;
 
+    private ConfigurationFileJson configurationFileJson;
+
     /**
      *  @brief Constructor of the class.
      */
@@ -35,6 +38,7 @@ public class MineSweeperClient {
         this.receptionistWorker      = null;
         this.mainController          = null;
         this.lobby                   = null;
+        this.configurationFileJson   = new ConfigurationFileJson();
     }
 
 
@@ -101,6 +105,10 @@ public class MineSweeperClient {
 
     public void setMineSweeperGame(MineSweeperGame mineSweeperGame) {
         this.mineSweeperGame = mineSweeperGame;
+    }
+
+    public ConfigurationFileJson getConfigurationFileJson() {
+        return configurationFileJson;
     }
 
     /**

@@ -91,6 +91,8 @@ public class LobbyWindowController {
 
 
 
+    private ObservableList<String> customConfigChoices;
+
 
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
@@ -101,7 +103,6 @@ public class LobbyWindowController {
      */
     public void initialize() {
 
-        ObservableList<String> customConfigChoices;
         ObservableList<String> playerAmountChoices;
         ObservableList<String> fieldSizeChoices;
         ObservableList<String> scoreModeChoices;
@@ -113,6 +114,7 @@ public class LobbyWindowController {
         playerAmountChoices = FXCollections.observableArrayList();
         fieldSizeChoices    = FXCollections.observableArrayList();
         scoreModeChoices    = FXCollections.observableArrayList();
+
 
 
         for(int iter_slot = Configuration.MIN_SLOT; iter_slot <= Configuration.MAX_SLOT; iter_slot++)
@@ -130,7 +132,6 @@ public class LobbyWindowController {
 
 
         // Adding the Choices to the lobby window.
-        customConfigSelect.setItems(customConfigChoices);
         playerAmountSelect.setItems(playerAmountChoices);
         fieldSizeSelect.setItems(fieldSizeChoices);
         scoreModeSelect.setItems(scoreModeChoices);
@@ -140,20 +141,17 @@ public class LobbyWindowController {
         playerAmountSelect.getSelectionModel().selectedIndexProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
                         this.playerAmountSelected(playerAmountChoices.get(newSelected.intValue()))
-                        //System.out.println(playerAmountChoices.get(newSelected.intValue()))
         );
 
 
         scoreModeSelect.getSelectionModel().selectedIndexProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
                         this.scoreModeSelected(scoreModeChoices.get(newSelected.intValue()))
-                //System.out.println(scoreModeChoices.get(newSelected.intValue()))
         );
 
         fieldSizeSelect.getSelectionModel().selectedIndexProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
                         this.fieldSizeSelected(fieldSizeChoices.get(newSelected.intValue()))
-                        //System.out.println(scoreModeChoices.get(newSelected.intValue()))
         );
 
 
@@ -161,7 +159,6 @@ public class LobbyWindowController {
                 (ChangeListener<Number>) (observableValue, oldVal, newVal) ->
                         //mineProportionSlider.setValue(newVal.intValue())
                         this.mineProportionSlided(newVal.intValue())
-                //System.out.println(scoreModeChoices.get(newVal.intValue()))
         );
 
 
@@ -195,6 +192,16 @@ public class LobbyWindowController {
             if(item.equals(saveConfigMenuItem))
                 item.setVisible(true);
 
+
+        customConfigChoices.addAll(mainController.getMineSweeperClient().getConfigurationFileJson().listOfConfigs());
+
+        customConfigSelect.setItems(customConfigChoices);
+
+        customConfigSelect.getSelectionModel().selectedIndexProperty().addListener(
+                (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
+                        this.customConfigSelected(customConfigChoices.get(newSelected.intValue()))
+                //System.out.println(playerAmountChoices.get(newSelected.intValue()))
+        );
 
         isAdmin = true;
     }
@@ -388,6 +395,34 @@ public class LobbyWindowController {
     }
 
     /**
+     * @brief
+     *
+     * @param customConfig
+     */
+    private void customConfigSelected(String customConfig) {
+
+        Configuration configuration;
+
+        synchronized (lobbyWindowLock){
+            if(isAdmin){
+                configuration = mainController.getMineSweeperClient().getConfigurationFileJson().selectConfig(customConfig);
+                if(configuration == null)
+                    return;
+
+                mainController.getMineSweeperClient().setPlayerAmount(configuration.getNbrSlot());
+                mainController.getMineSweeperClient().setFieldSize(configuration.getWidth(),configuration.getHeight());
+                mainController.getMineSweeperClient().setMineProportion(configuration.getMineProportion());
+                mainController.getMineSweeperClient().setScoreMode(configuration.getScore().toString());
+                if(configuration.isBonus()){
+                    mainController.getMineSweeperClient().enableBonusMalus();
+                }else{
+                    mainController.getMineSweeperClient().disableBonusMalus();
+                }
+            }
+        }
+    }
+
+    /**
      * @brief Function called when a choice in the "playerAmountSelect" choice box is selected. .
      *        Sends a command to the server to change the player Amount.
      *
@@ -535,6 +570,8 @@ public class LobbyWindowController {
 
                 String configurationName;
 
+                Configuration configuration;
+
                 //ConfigurationPopUpController configurationPopUpController;
 
                 try {
@@ -561,6 +598,13 @@ public class LobbyWindowController {
                         System.out.println(configurationName);
 
                         ConfigurationPopUpController.save_clicked = false;
+
+                        configuration = mainController.getMineSweeperClient().getLobby().getConfig();
+
+                        configuration.setName(configurationName);
+
+
+                        mainController.getMineSweeperClient().getConfigurationFileJson().insertConfigurationIntoFile(configuration);
                     }
 
 
