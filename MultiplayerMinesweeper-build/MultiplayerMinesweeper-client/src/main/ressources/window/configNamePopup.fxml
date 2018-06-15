@@ -65,7 +65,7 @@
                      <children>
                         <BorderPane prefHeight="200.0" prefWidth="200.0">
                            <center>
-                              <Button fx:id="cancelButton" onAction="#cancelButtonClicked" mnemonicParsing="false" text="Cancel" BorderPane.alignment="CENTER">
+                              <Button fx:id="cancelButton" onAction="#cancelButtonClicked" style="-fx-background-color: #ff9999" mnemonicParsing="false" text="Cancel" BorderPane.alignment="CENTER">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -77,7 +77,7 @@
                         </BorderPane>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                            <center>
-                              <Button fx:id="saveButton" onAction="#saveButtonClicked" mnemonicParsing="false" text="Save" BorderPane.alignment="CENTER">
+                              <Button fx:id="saveButton" onAction="#saveButtonClicked" style="-fx-background-color: #ff9999" mnemonicParsing="false" text="Save" BorderPane.alignment="CENTER">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

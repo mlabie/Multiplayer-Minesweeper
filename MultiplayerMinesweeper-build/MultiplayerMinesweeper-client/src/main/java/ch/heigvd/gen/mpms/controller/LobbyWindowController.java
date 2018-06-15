@@ -192,6 +192,7 @@ public class LobbyWindowController {
             if(item.equals(saveConfigMenuItem))
                 item.setVisible(true);
 
+        customConfigChoices.clear();
 
         customConfigChoices.addAll(mainController.getMineSweeperClient().getConfigurationFileJson().listOfConfigs());
 
@@ -200,7 +201,6 @@ public class LobbyWindowController {
         customConfigSelect.getSelectionModel().selectedIndexProperty().addListener(
                 (ChangeListener<Number>) (observableValue, oldSelected, newSelected) ->
                         this.customConfigSelected(customConfigChoices.get(newSelected.intValue()))
-                //System.out.println(playerAmountChoices.get(newSelected.intValue()))
         );
 
         isAdmin = true;

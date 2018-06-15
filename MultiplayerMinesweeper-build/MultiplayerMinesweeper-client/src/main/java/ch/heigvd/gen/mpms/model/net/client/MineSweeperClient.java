@@ -6,7 +6,6 @@ import ch.heigvd.gen.mpms.model.Game.MineSweeperGame;
 import ch.heigvd.gen.mpms.model.Lobby.Lobby;
 
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

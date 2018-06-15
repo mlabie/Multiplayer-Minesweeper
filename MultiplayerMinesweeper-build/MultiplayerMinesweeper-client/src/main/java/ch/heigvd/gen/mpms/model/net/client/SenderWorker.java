@@ -1,13 +1,11 @@
 package ch.heigvd.gen.mpms.model.net.client;
 
-import ch.heigvd.gen.mpms.controller.MainController;
 import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

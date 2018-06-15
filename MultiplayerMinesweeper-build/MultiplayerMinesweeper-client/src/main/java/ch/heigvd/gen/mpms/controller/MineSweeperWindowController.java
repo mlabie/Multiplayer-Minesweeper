@@ -3,13 +3,11 @@ package ch.heigvd.gen.mpms.controller;
 
 import ch.heigvd.gen.mpms.model.GameComponent.Player;
 import ch.heigvd.gen.mpms.model.GameComponent.Square;
-import ch.heigvd.gen.mpms.model.net.Protocol.MinesweeperProtocol;
 import ch.heigvd.gen.mpms.view.MineSweeperWindowStyle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,9 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.Vector;
 
 public class MineSweeperWindowController {
